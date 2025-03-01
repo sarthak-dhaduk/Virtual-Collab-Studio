@@ -38,20 +38,20 @@
 ---
 
 <p align="center">
-  <a href="#📌-about-the-project">📌 About The Project</a> • 
-  <a href="#✨-key-features">✨ Key Features</a> • 
-  <a href="#🛠️-built-with">🛠️ Built With</a> • 
-  <a href="#🎨-ui-design">🎨 UI Design</a> • 
-  <a href="#🚀-getting-started">🚀 Getting Started</a> 
+  <a href="#-about-the-project">📌 About The Project</a> • 
+  <a href="#-key-features">✨ Key Features</a> • 
+  <a href="#-built-with">🛠️ Built With</a> • 
+  <a href="#-ui-design">🎨 UI Design</a> • 
+  <a href="#-getting-started">🚀 Getting Started</a> 
 </p>
 
 <p align="center">
-  <a href="#📋-prerequisites">📋 Prerequisites</a> • 
-  <a href="#📦-installation">📦 Installation</a> • 
-  <a href="#▶️-running-the-project">▶️ Running the Project</a> • 
-  <a href="#💡-usage">💡 Usage</a> • 
-  <a href="#🤝-contributing">🤝 Contributing</a> • 
-  <a href="#📧-contact">📧 Contact</a> 
+  <a href="#-prerequisites">📋 Prerequisites</a> • 
+  <a href="#-installation">📦 Installation</a> • 
+  <a href="#-running-the-project">▶️ Running the Project</a> • 
+  <a href="#-usage">💡 Usage</a> • 
+  <a href="#-contributing">🤝 Contributing</a> • 
+  <a href="#-contact">📧 Contact</a> 
 </p>
 
 ---
