@@ -9,7 +9,7 @@
 <!-- PROJECT LOGO -->
 <br />
 <div align="center">
-  <a href="https://github.com/sarthak-dhaduk/VC-Studio">
+  <a href="https://github.com/sarthak-dhaduk/Virtual-Collab-Studio">
     <svg width="200" height="200" viewBox="0 0 569 411" fill="none" xmlns="http://www.w3.org/2000/svg">
 <g clip-path="url(#clip0_1_18)">
 <path d="M60.5 175.912L165.5 246.912L168.5 250.25L171 254.25L172.5 258.75L173 262.75V267.25L172.5 271.75L170.5 275.75L167.5 279.25L165 281.75L162 283.75L159 285.25L155.5 286.25L148.5 286.75L141.5 284.912L90.5 250.25L75 214.25L61 190.75L48.5 175.912H60.5Z" fill="#1C3263"/>
@@ -47,14 +47,14 @@
   <p align="center">
     An innovative collaborative coding platform for seamless teamwork and code sharing.
     <br />
-    <a href="https://github.com/sarthak-dhaduk/VC-Studio"><strong>Explore the docs »</strong></a>
+    <a href="https://github.com/sarthak-dhaduk/Virtual-Collab-Studio"><strong>Explore the docs »</strong></a>
     <br />
     <br />
-    <a href="https://github.com/sarthak-dhaduk/VC-Studio/archive/refs/heads/main.zip">Download ZIP</a>
+    <a href="https://github.com/sarthak-dhaduk/Virtual-Collab-Studio/archive/refs/heads/main.zip">Download ZIP</a>
     ·
-    <a href="https://github.com/sarthak-dhaduk/VC-Studio/issues/new?labels=bug&template=bug-report---.md">Report Bug</a>
+    <a href="https://github.com/sarthak-dhaduk/Virtual-Collab-Studio/issues/new?labels=bug&template=bug-report---.md">Report Bug</a>
     ·
-    <a href="https://github.com/sarthak-dhaduk/VC-Studio/issues/new?labels=enhancement&template=feature-request---.md">Request Feature</a>
+    <a href="https://github.com/sarthak-dhaduk/Virtual-Collab-Studio/issues/new?labels=enhancement&template=feature-request---.md">Request Feature</a>
   </p>
 </div>
 
@@ -189,7 +189,7 @@ _Follow these steps to install and run the project locally:_
 1. **Clone the repository:**
 
    ```sh
-   git clone https://github.com/sarthak-dhaduk/VC-Studio.git
+   git clone https://github.com/sarthak-dhaduk/Virtual-Collab-Studio.git
    ```
 
    ```sh
@@ -283,14 +283,14 @@ Maintenance Team:
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
 
-[contributors-shield]: https://img.shields.io/github/contributors/sarthak-dhaduk/VC-Studio.svg?style=for-the-badge
-[contributors-url]: https://github.com/sarthak-dhaduk/VC-Studio/graphs/contributors
-[forks-shield]: https://img.shields.io/github/forks/sarthak-dhaduk/VC-Studio.svg?style=for-the-badge
-[forks-url]: https://github.com/sarthak-dhaduk/VC-Studio/network/members
-[stars-shield]: https://img.shields.io/github/stars/sarthak-dhaduk/VC-Studio.svg?style=for-the-badge
-[stars-url]: https://github.com/sarthak-dhaduk/VC-Studio/stargazers
-[issues-shield]: https://img.shields.io/github/issues/sarthak-dhaduk/VC-Studio.svg?style=for-the-badge
-[issues-url]: https://github.com/sarthak-dhaduk/VC-Studio/issues
+[contributors-shield]: https://img.shields.io/github/contributors/sarthak-dhaduk/Virtual-Collab-Studio.svg?style=for-the-badge
+[contributors-url]: https://github.com/sarthak-dhaduk/Virtual-Collab-Studio/graphs/contributors
+[forks-shield]: https://img.shields.io/github/forks/sarthak-dhaduk/Virtual-Collab-Studio.svg?style=for-the-badge
+[forks-url]: https://github.com/sarthak-dhaduk/Virtual-Collab-Studio/network/members
+[stars-shield]: https://img.shields.io/github/stars/sarthak-dhaduk/Virtual-Collab-Studio.svg?style=for-the-badge
+[stars-url]: https://github.com/sarthak-dhaduk/Virtual-Collab-Studio/stargazers
+[issues-shield]: https://img.shields.io/github/issues/sarthak-dhaduk/Virtual-Collab-Studio.svg?style=for-the-badge
+[issues-url]: https://github.com/sarthak-dhaduk/Virtual-Collab-Studio/issues
 [linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
 [linkedin-url]: https://linkedin.com/in/sarthak-dhaduk
 [product-screenshot]: VC-Studio-Client/public/Thumbnail.png
