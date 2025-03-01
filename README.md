@@ -9,11 +9,9 @@
 <!-- PROJECT LOGO -->
 <br />
 <div align="center">
-  <a href="https://github.com/sarthak-dhaduk/Virtual-Collab-Studio">
-
-[![site-logo][logo]]()
-
-  </a>
+<a href="https://github.com/sarthak-dhaduk/Virtual-Collab-Studio">
+  <img src="VC-Studio-Client/public/icon2.svg" alt="site-logo" width="300" height="142">
+</a>
 
   <h3 align="center">Virtual Collab Studio (VC Studio)</h3>
 
