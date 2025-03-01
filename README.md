@@ -40,7 +40,7 @@
 <p align="center">
   <a href="#-about-the-project">📌 About The Project</a> • 
   <a href="#-key-features">✨ Key Features</a> • 
-  <a href="#-built-with">🛠️ Built With</a> • 
+  <a href="#%EF%B8%8F-built-with">🛠️ Built With</a> • 
   <a href="#-ui-design">🎨 UI Design</a> • 
   <a href="#-getting-started">🚀 Getting Started</a> 
 </p>
@@ -48,7 +48,7 @@
 <p align="center">
   <a href="#-prerequisites">📋 Prerequisites</a> • 
   <a href="#-installation">📦 Installation</a> • 
-  <a href="#-running-the-project">▶️ Running the Project</a> • 
+  <a href="#%EF%B8%8F-running-the-project">▶️ Running the Project</a> • 
   <a href="#-usage">💡 Usage</a> • 
   <a href="#-contributing">🤝 Contributing</a> • 
   <a href="#-contact">📧 Contact</a> 
@@ -94,7 +94,7 @@ The project consists of two components within one project directory **Virtual-Co
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-### 🛠️ Built With
+## 🛠️ Built With
 
 This section list all the technologies used for building the web application.
 
