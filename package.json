@@ -1,0 +1,17 @@
+{
+  "name": "virtual-collab-studio",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "start": "npm run start-all",
+    "start-all": "concurrently \"npm run dev --prefix VC-Studio-Server\" \"npm run dev --prefix VC-Studio-Client\"",
+    "install-all": "npm install --prefix VC-Studio-Server && npm install --prefix VC-Studio-Client"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "devDependencies": {
+    "concurrently": "^9.1.2"
+  }
+}
