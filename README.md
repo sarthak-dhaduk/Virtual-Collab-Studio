@@ -29,6 +29,10 @@
   </p>
 </div>
 
+</br>
+</br>
+</br>
+
 <!-- TABLE OF CONTENTS -->
 
 ### 🧭 Navigations for exploration
@@ -54,9 +58,7 @@
 
 ---
 
-</br>
-</br>
-</br>
+
 </br>
 </br>
 </br>
