@@ -59,37 +59,39 @@
 </div>
 
 <!-- TABLE OF CONTENTS -->
-<details>
-  <summary>Table of Contents</summary>
-  <ol>
-    <li>
-      <a href="#about-the-project">About The Project</a>
-      <ul>
-        <li><a href="#key-features">Key Features</a></li>
-      </ul>
-    </li>
-    <li>
-      <a href="#built-with">Built With</a>
-    </li>
-    <li>
-      <a href="#ui-design">UI Design</a>
-    </li>
-    <li>
-      <a href="#getting-started">Getting Started</a>
-      <ul>
-        <li><a href="#prerequisites">Prerequisites</a></li>
-        <li><a href="#installation">Installation</a></li>
-      </ul>
-    </li>
-    <li><a href="#usage">Usage</a></li>
-    <li><a href="#contributing">Contributing</a></li>
-    <li><a href="#contact">Contact</a></li>
-  </ol>
-</details>
+### 🧭 Navigations for exploration
+
+---
+
+<p align="center">
+  <a href="#📌-about-the-project">📌 About The Project</a> • 
+  <a href="#✨-key-features">✨ Key Features</a> • 
+  <a href="#🛠️-built-with">🛠️ Built With</a> • 
+  <a href="#🎨-ui-design">🎨 UI Design</a> • 
+  <a href="#🚀-getting-started">🚀 Getting Started</a> 
+</p>
+
+<p align="center">
+  <a href="#📋-prerequisites">📋 Prerequisites</a> • 
+  <a href="#📦-installation">📦 Installation</a> • 
+  <a href="#▶️-running-the-project">▶️ Running the Project</a> • 
+  <a href="#💡-usage">💡 Usage</a> • 
+  <a href="#🤝-contributing">🤝 Contributing</a> • 
+  <a href="#📧-contact">📧 Contact</a> 
+</p>
+
+---
+
+</br>
+</br>
+</br>
+</br>
+</br>
+</br>
 
 <!-- ABOUT THE PROJECT -->
 
-## About The Project
+## 📌 About The Project
 
 "Virtual Collab Studio (VC Studio)" is a collaborative coding platform designed for teams to code together in real time, share ideas, and publish their work for the community. Built as a project by Sarthak Dhaduk, Yash Lalani, and Jigar Kalariya, it features a seamless blend of collaborative coding and a blog-style sharing interface.
 
@@ -108,7 +110,7 @@ The project consists of two components within one project directory **Virtual-Co
 
 </br>
 
-### Key Features
+## ✨ Key Features
 
 - **Collaborative Workspace:** Create and join real-time coding sessions using a unique workspace ID.
 - **Code Editor & Compiler:** Work collaboratively on code with live compilation support.
@@ -118,7 +120,7 @@ The project consists of two components within one project directory **Virtual-Co
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-### Built With
+### 🛠️ Built With
 
 This section list all the technologies used for building the web application.
 
@@ -133,7 +135,7 @@ This section list all the technologies used for building the web application.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-## UI Design
+## 🎨 UI Design
 
 The user interface of "Virtual Collab Studio" has been meticulously crafted to provide a user-friendly and efficient collaborative coding experience. From real-time code editing to blog functionality, the design ensures an intuitive and engaging experience.
 
@@ -145,13 +147,13 @@ You can explore the complete UI design on Figma using the link below:
 
 <!-- GETTING STARTED -->
 
-## Getting Started
+## 🚀 Getting Started
 
 Follow these instructions to set up and run the **Virtual Collab Studio** project locally.
 
 ---
 
-### Prerequisites
+### 📋 Prerequisites
 
 Before running the project, ensure you have the following installed:
 
@@ -180,7 +182,7 @@ Before running the project, ensure you have the following installed:
 
 ---
 
-### Installation
+### 📦 Installation
 
 _Follow these steps to install and run the project locally:_
 
@@ -220,7 +222,7 @@ _Follow these steps to install and run the project locally:_
 
 ---
 
-### Running the Project
+### ▶️ Running the Project
 
 After completing all setup steps, start both the **backend** and **frontend** simultaneously using `concurrently`:
 
@@ -234,7 +236,7 @@ Your **Virtual Collab Studio** project should now be running locally! 🚀
 
 <!-- USAGE EXAMPLES -->
 
-## Usage
+## 💡 Usage
 
 "Virtual Collab Studio" is designed to simplify collaborative coding and community sharing. Here are some use cases:
 
@@ -254,7 +256,7 @@ Your **Virtual Collab Studio** project should now be running locally! 🚀
 
 <!-- CONTRIBUTING -->
 
-## Contributing
+## 🤝 Contributing
 
 Contributions are what make the open-source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**.
 
@@ -268,7 +270,7 @@ Contributions are what make the open-source community such an amazing place to l
 
 <!-- CONTACT -->
 
-## Contact
+## 📧 Contact
 
 Maintenance Team:
 
