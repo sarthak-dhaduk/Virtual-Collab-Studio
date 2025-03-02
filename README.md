@@ -167,7 +167,7 @@ _Follow these steps to install and run the project locally:_
    ```
 
    ```sh
-   cd VC-Studio
+   cd Virtual-Collab-Studio
    ```
 
 2. **Install Dependencies for Both Backend and Frontend:**
