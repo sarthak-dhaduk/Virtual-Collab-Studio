@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import SidebarSection from "./ui/SidebarSection";
+import { useLocation } from "react-router-dom";
 import MainLogo from "./ui/MainLogo";
 
 const Sidebar = ({ isSidebarVisible }) => {
@@ -10,7 +10,7 @@ const Sidebar = ({ isSidebarVisible }) => {
     Workspace: true,
   });
   const dropdownRef = useRef(null);
-
+  const location = useLocation()
   const toggleDropdown = () => {
     setIsDropdownOpen(!isDropdownOpen);
   };
@@ -38,6 +38,7 @@ const Sidebar = ({ isSidebarVisible }) => {
       title: "General",
       links: [
         {
+          currentPath: "active",
           path: "/dashboard",
           label: "Dashboard",
           icon: (
@@ -265,6 +266,7 @@ const Sidebar = ({ isSidebarVisible }) => {
           {...section}
           isOpen={openSections[section.title]}
           toggleSection={toggleSection}
+          currentPath={location.pathname}
         />
       ))}
 
