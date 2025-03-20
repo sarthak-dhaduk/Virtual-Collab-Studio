@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useLocation } from "react-router-dom";
 import MainLogo from "./ui/MainLogo";
+import SidebarSection from "./ui/SidebarSection";
+
 
 const Sidebar = ({ isSidebarVisible }) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -258,7 +260,7 @@ const Sidebar = ({ isSidebarVisible }) => {
         className="sidebar-header"
         style={{ display: "flex", justifyContent: "center" }}
       >
-        <MainLogo />
+        <MainLogo /> 
       </div>
       {sections.map((section, index) => (
         <SidebarSection
