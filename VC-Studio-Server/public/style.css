@@ -1,0 +1,166 @@
+body {
+  background-color: #0e1113;
+}
+
+.green-light {
+  width: 13px;
+  height: 13px;
+  background-color: green;
+  border-radius: 50%; /* Make it a circle */
+  box-shadow: inset 0 0 1px rgba(0, 0, 0, 0.5),
+    /* Inner shadow */ 0 0 1px rgba(0, 255, 0, 0.8),
+    /* Outer glow */ 0 0 7px rgba(0, 255, 0, 0.6); /* Softer glow */
+}
+.gradient-shadow-card {
+  background: transparent; /* Keep the card background transparent */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2), 0 1px 3px rgba(0, 0, 0, 0.1),
+    inset 0 0 20px rgba(0, 0, 0, 0.1); /* Inner gradient-like shadow */
+  border: 1px solid rgba(255, 255, 255, 0.2); /* Optional: Add a subtle border */
+  border-radius: 12px; /* Rounded corners */
+  padding: 20px; /* Space inside the card */
+  backdrop-filter: blur(8px); /* Add blur effect for a frosted-glass look */
+  -webkit-backdrop-filter: blur(8px); /* Safari support */
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.gradient-shadow-card:hover {
+  transform: translateY(5px); /* Lift effect on hover */
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3), 0 2px 6px rgba(0, 0, 0, 0.2),
+    inset 0 0 25px rgba(0, 0, 0, 0.15); /* Enhance inner shadow on hover */
+}
+
+.satellite-svg {
+  position: fixed;
+  z-index: -1;
+  width: 357px;
+  height: 124px;
+  top: 20%;
+  right: 10%;
+  animation: orbit 3s linear infinite;
+}
+
+.svg-container {
+  position: fixed; /* Fix the container at the bottom */
+  bottom: 0; /* Align to the bottom of the viewport */
+  left: 0; /* Align to the left of the viewport */
+  width: 100%; /* Take full width of the screen */
+  height: auto; /* Auto height to maintain aspect ratio */
+  overflow: hidden; /* Hide any overflow content */
+  z-index: -1; /* Push the SVG to the background if needed */
+}
+
+.globle {
+  width: 100%; /* Ensure SVG scales with the container */
+  height: auto; /* Maintain aspect ratio */
+}
+
+.flag {
+  position: absolute;
+  bottom: 15%; /* Default for larger devices (laptops/desktops) */
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 10;
+  height: 36px; /* Default height for larger devices */
+}
+
+.signal {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  background: white;
+  border-radius: 50%;
+  z-index: 5;
+  animation: travel 2s linear infinite;
+}
+
+/* For Small Devices (Phones) */
+@media (max-width: 599px) {
+  .flag {
+    bottom: 2%; /* Adjust bottom position for small devices */
+    height: 18px; /* Reduce height for small devices */
+  }
+}
+
+/* For Medium Devices (Tablets) */
+@media (min-width: 600px) and (max-width: 1199px) {
+  .flag {
+    bottom: 10%; /* Adjust bottom position for medium devices (tablets) */
+    height: 24px; /* Slightly reduce height for medium devices */
+  }
+}
+
+/* For Large Devices (Desktops/Laptops) */
+@media (min-width: 1200px) {
+  .flag {
+    bottom: 15%; /* Keep bottom position at 15% for large devices */
+    height: 36px; /* Keep height at 36px for larger devices */
+  }
+}
+
+@media (max-width: 480px) {
+  .satellite-svg {
+    width: 150px;
+    height: 50px;
+    top: 77%;
+    right: 5%;
+  }
+}
+
+/* For Small Devices (e.g., phones in landscape mode) */
+@media (min-width: 481px) and (max-width: 767px) {
+  .satellite-svg {
+    width: 200px;
+    height: 70px;
+    top: 55%;
+    right: 7%;
+  }
+}
+
+/* For Medium Devices (e.g., tablets) */
+@media (min-width: 768px) and (max-width: 1023px) {
+  .satellite-svg {
+    width: 250px;
+    height: 90px;
+    top: 18%;
+    right: 8%;
+  }
+}
+
+/* For Large Devices (e.g., laptops) */
+@media (min-width: 1024px) and (max-width: 1439px) {
+  .satellite-svg {
+    width: 300px;
+    height: 110px;
+    top: 16%;
+    right: 9%;
+  }
+}
+
+/* For Extra Large Devices (e.g., desktops) */
+@media (min-width: 1440px) {
+  .satellite-svg {
+    width: 357px;
+    height: 124px;
+    top: 15%;
+    right: 10%;
+  }
+}
+
+@keyframes travel {
+  from {
+    transform: translate(0, 0) scale(1);
+  }
+  to {
+    transform: translate(var(--tx), var(--ty)) scale(0.5);
+  }
+}
+
+@keyframes orbit {
+  0%,
+  100% {
+    transform: translateY(5px);
+  }
+  50% {
+    transform: translateY(0px);
+  }
+}
