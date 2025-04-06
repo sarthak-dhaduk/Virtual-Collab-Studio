@@ -356,7 +356,7 @@
 .sidebar {
   width: 312px;
   background-color: #0d0f10;
-  height: 110vh; /* Ensures sidebar height matches the parent */
+  height: 110vh;
   padding: 20px;
   transition: transform 0.3s ease-in-out;
   color: white;
@@ -379,18 +379,33 @@
   padding: 10px;
   background-color: #131619;
   transition: margin-left 0.3s ease-in-out;
-  height: 110vh; /* Matches the sidebar */
+  height: 110vh;
     -ms-overflow-style: none;
       overflow-y: auto;
-      /* Allows scrolling */
       scrollbar-width: none;
-      /* Thin scrollbar for Firefox */
       scrollbar-color: black transparent;
 }
+@media (min-width: 769px) {
+  .sidebar-hidden + .main-content {
+    margin-left: -20.8rem;
+  }
+}
 
+@media (max-width: 768px) {
+  .sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1050;
+    width: 250px;
+  }
 
-.sidebar-hidden + .main-content {
-  margin-left: -20.8rem;
+  .sidebar:not(.sidebar-hidden) ~ .main-content {
+    filter: blur(5px);
+  }
+  .contact-card {
+    max-width: 100% !important;
+  }
 }
 
 /* Toggle Button Styling */
@@ -789,7 +804,6 @@ border-radius: 20px !important;
   line-height: 1.5;
   color: #93fdf4;
 }
-
 
 .sub-heading {
   font-size: 1.2rem;

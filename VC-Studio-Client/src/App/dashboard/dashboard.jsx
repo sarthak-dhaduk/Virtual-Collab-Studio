@@ -3,7 +3,6 @@ import MainContent from "../../components/main-content";
 import AddPostButton from "../../components/ui/AddPostButton";
 import DropdownLanguage from "../../components/ui/DropdownLanguage";
 import RunButton from "../../components/ui/RunButton";
-import AddPostModal from "../../components/modals/AddPosts";
 
 const DashboardPage = () => {
   const [selectedLanguage, setSelectedLanguage] = useState("Python");
