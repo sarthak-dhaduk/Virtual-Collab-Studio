@@ -3,6 +3,7 @@ import MainContent from "../../components/main-content";
 import AddPostButton from "../../components/ui/AddPostButton";
 import DropdownLanguage from "../../components/ui/DropdownLanguage";
 import RunButton from "../../components/ui/RunButton";
+import CodeEditor from "../../components/ui/CodeEditor";
 
 const DashboardPage = () => {
   const [selectedLanguage, setSelectedLanguage] = useState("Python");
@@ -48,11 +49,7 @@ const DashboardPage = () => {
 
         {/* Code Editor Textarea */}
         <div className="card-body input-field p-3">
-          <textarea
-            placeholder="Write your code here..."
-            className="custom-textarea text-white border-0"
-            style={{ height: "250px" }}
-          />
+          <CodeEditor containerRef={containerRef} />
         </div>
       </div>
 
@@ -63,8 +60,9 @@ const DashboardPage = () => {
             <ul className="nav nav-tabs-bordered">
               <li className="nav-item">
                 <span
-                  className={`nav-link ${activeTab === "output" ? "active" : ""
-                    } fw-bolder`}
+                  className={`nav-link ${
+                    activeTab === "output" ? "active" : ""
+                  } fw-bolder`}
                   onClick={() => setActiveTab("output")}
                 >
                   Output
@@ -72,8 +70,9 @@ const DashboardPage = () => {
               </li>
               <li className="nav-item">
                 <span
-                  className={`nav-link ${activeTab === "input" ? "active" : ""
-                    } fw-bolder`}
+                  className={`nav-link ${
+                    activeTab === "input" ? "active" : ""
+                  } fw-bolder`}
                   onClick={() => setActiveTab("input")}
                 >
                   Input
@@ -92,15 +91,17 @@ const DashboardPage = () => {
           </div>
           <div className="card-body">
             <div
-              className={`tab-pane fade ${activeTab === "output" ? "show active" : ""
-                }`}
+              className={`tab-pane fade ${
+                activeTab === "output" ? "show active" : ""
+              }`}
               id="output"
             >
               <p className="m-0">Microsoft Windows [Version 10.0.19044.2728]</p>
             </div>
             <div
-              className={`tab-pane fade ${activeTab === "input" ? "show active" : ""
-                }`}
+              className={`tab-pane fade ${
+                activeTab === "input" ? "show active" : ""
+              }`}
               id="input"
             >
               <p>C:\Users&gt;</p>

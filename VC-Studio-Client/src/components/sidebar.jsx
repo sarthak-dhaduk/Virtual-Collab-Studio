@@ -3,8 +3,7 @@ import { useLocation } from "react-router-dom";
 import MainLogo from "./ui/MainLogo";
 import SidebarSection from "./ui/SidebarSection";
 
-
-const Sidebar = ({ isSidebarVisible }) => {
+const Sidebar = ({ isSidebarVisible, isLoggedIn, users }) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [openSections, setOpenSections] = useState({
     General: true,
@@ -12,7 +11,7 @@ const Sidebar = ({ isSidebarVisible }) => {
     Workspace: true,
   });
   const dropdownRef = useRef(null);
-  const location = useLocation()
+  const location = useLocation();
   const toggleDropdown = () => {
     setIsDropdownOpen(!isDropdownOpen);
   };
@@ -132,71 +131,60 @@ const Sidebar = ({ isSidebarVisible }) => {
     },
     {
       title: "Members",
-      links: [
-        {
-          label: "Sarthak Dhaduk",
-          icon: (
-            <svg
-              className="icon-shadow"
-              width="20"
-              height="20"
-              viewBox="0 0 20 20"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M15 17.5V17C15 15.3431 13.6569 14 12 14H8C6.34315 14 5 15.3431 5 17V17.5M13 8C13 9.65685 11.6569 11 10 11C8.34315 11 7 9.65685 7 8C7 6.34315 8.34315 5 10 5C11.6569 5 13 6.34315 13 8ZM19 10C19 14.9706 14.9706 19 10 19C5.02944 19 1 14.9706 1 10C1 5.02944 5.02944 1 10 1C14.9706 1 19 5.02944 19 10Z"
-                stroke="#686B6E"
-                strokeWidth="1.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
-          ),
-        },
-        {
-          label: "Yash Lalani",
-          icon: (
-            <svg
-              className="icon-shadow"
-              width="20"
-              height="20"
-              viewBox="0 0 20 20"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M15 17.5V17C15 15.3431 13.6569 14 12 14H8C6.34315 14 5 15.3431 5 17V17.5M13 8C13 9.65685 11.6569 11 10 11C8.34315 11 7 9.65685 7 8C7 6.34315 8.34315 5 10 5C11.6569 5 13 6.34315 13 8ZM19 10C19 14.9706 14.9706 19 10 19C5.02944 19 1 14.9706 1 10C1 5.02944 5.02944 1 10 1C14.9706 1 19 5.02944 19 10Z"
-                stroke="#686B6E"
-                strokeWidth="1.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
-          ),
-        },
-        {
-          label: "Kalariya Jigar",
-          icon: (
-            <svg
-              className="icon-shadow"
-              width="20"
-              height="20"
-              viewBox="0 0 20 20"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M15 17.5V17C15 15.3431 13.6569 14 12 14H8C6.34315 14 5 15.3431 5 17V17.5M13 8C13 9.65685 11.6569 11 10 11C8.34315 11 7 9.65685 7 8C7 6.34315 8.34315 5 10 5C11.6569 5 13 6.34315 13 8ZM19 10C19 14.9706 14.9706 19 10 19C5.02944 19 1 14.9706 1 10C1 5.02944 5.02944 1 10 1C14.9706 1 19 5.02944 19 10Z"
-                stroke="#686B6E"
-                strokeWidth="1.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
-          ),
-        },
-      ],
+      links:
+        Array.isArray(users) && users.length > 0
+          ? users.map((user) => ({
+              label: user,
+              icon: (
+                <svg
+                  className="icon-shadow"
+                  width="20"
+                  height="20"
+                  viewBox="0 0 20 20"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M15 17.5V17C15 15.3431 13.6569 14 12 14H8C6.34315 14 5 15.3431 5 17V17.5M13 8C13 9.65685 11.6569 11 10 11C8.34315 11 7 9.65685 7 8C7 6.34315 8.34315 5 10 5C11.6569 5 13 6.34315 13 8ZM19 10C19 14.9706 14.9706 19 10 19C5.02944 19 1 14.9706 1 10C1 5.02944 5.02944 1 10 1C14.9706 1 19 5.02944 19 10Z"
+                    stroke="#686B6E"
+                    strokeWidth="1.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+              ),
+            }))
+          : [
+              {
+                label: "No members found",
+                icon: (
+                  <svg
+                    className="icon-shadow"
+                    width="20"
+                    height="20"
+                    viewBox="0 0 20 20"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <circle
+                      cx="10"
+                      cy="10"
+                      r="8"
+                      stroke="#ccc"
+                      strokeWidth="1.5"
+                    />
+                    <line
+                      x1="6"
+                      y1="10"
+                      x2="14"
+                      y2="10"
+                      stroke="#ccc"
+                      strokeWidth="1.5"
+                    />
+                  </svg>
+                ),
+              },
+            ],
     },
     {
       title: "Workspace",
@@ -260,7 +248,7 @@ const Sidebar = ({ isSidebarVisible }) => {
         className="sidebar-header"
         style={{ display: "flex", justifyContent: "center" }}
       >
-        <MainLogo /> 
+        <MainLogo />
       </div>
       {sections.map((section, index) => (
         <SidebarSection
@@ -315,7 +303,8 @@ const Sidebar = ({ isSidebarVisible }) => {
             {isDropdownOpen && (
               <div className="dropdown-menu dropdown-menu-dark show">
                 <button
-                  className="dropdown-item d-flex justify-content-between align-items-center" data-bs-toggle="modal"
+                  className="dropdown-item d-flex justify-content-between align-items-center"
+                  data-bs-toggle="modal"
                   data-bs-target="#profileSettingsModal"
                   onClick={() => {
                     console.log("Logout clicked");
