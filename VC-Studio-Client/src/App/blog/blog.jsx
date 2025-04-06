@@ -2,9 +2,10 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import MainContent from "../../components/main-content";
 import ReviewList from "../../components/ui/ReviewList";
+
 const BlogPage = () => {
-    const [isDescriptionOpen, setIsDescriptionOpen] = useState(true);
-    const [isReviewOpen, setIsReviewOpen] = useState(true);
+  const [isDescriptionOpen, setIsDescriptionOpen] = useState(true);
+  const [isReviewOpen, setIsReviewOpen] = useState(true);
 
   const reviews = [
     { name: "Sarthak Dhaduk", rating: "⭐⭐⭐⭐⭐", initial: "S" },
@@ -15,7 +16,7 @@ const BlogPage = () => {
   return (
     <MainContent>
       <div className="row align-items-top">
-        <div className="col-lg-12">
+        <div className="col-12 col-lg-12">
           <div className="card">
             <div
               className="card-header d-flex justify-content-between align-items-center"
@@ -48,149 +49,143 @@ const BlogPage = () => {
                 </div>
               </div>
             </div>
-            <div className="card-body w-100 h-75">
-              <div className="ms-2">
-                <div className="card-body d-flex flex-wrap align-items-stretch">
-                  <div className="col-md-6 pe-md-3 d-flex flex-column">
-                    <div
-                      className="code-editor mt-3"
-                      style={{ position: "relative", borderRadius: "12px" }}
+            <div className="card-body">
+              <div className="row">
+                <div className="col-12 col-md-6">
+                  <div
+                    className="code-editor mt-3"
+                    style={{ position: "relative", borderRadius: "12px" }}
+                  >
+                    <header
+                      style={{
+                        display: "flex",
+                        justifyContent: "space-between",
+                        alignItems: "center",
+                        background: "#191919",
+                        borderRadius: "12px 12px 0 0",
+                      }}
                     >
-                      <header
-                        style={{
-                          display: "flex",
-                          justifyContent: "space-between",
-                          alignItems: "center",
-                          background: "#191919",
-                          borderRadius: "12px 12px 0 0",
-                        }}
+                      <h5 style={{ margin: "0", color: "white" }}></h5>
+                      <button
+                        className="btn btn-sm"
+                        style={{ color: "#686B6E" }}
                       >
-                        <h5 style={{ margin: "0", color: "white" }}></h5>
-                        <button
-                          className="btn btn-sm"
-                          style={{ color: "#686B6E" }}
+                        <svg
+                          width="18"
+                          height="18"
+                          viewBox="0 0 18 18"
+                          fill="none"
+                          xmlns="http://www.w3.org/2000/svg"
                         >
-                          <svg
-                            width="18"
-                            height="18"
-                            viewBox="0 0 18 18"
-                            fill="none"
-                            xmlns="http://www.w3.org/2000/svg"
-                          >
-                            <path
-                              d="M14.5 6H15C16.1046 6 17 6.89543 17 8V15C17 16.1046 16.1046 17 15 17H8C6.89543 17 6 16.1046 6 15V14.5M3 12H10C11.1046 12 12 11.1046 12 10V3C12 1.89543 11.1046 1 10 1H3C1.89543 1 1 1.89543 1 3V10C1 11.1046 1.89543 12 3 12Z"
-                              stroke="#686B6E"
-                              strokeWidth="1.5"
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                            />
-                          </svg>
-                          Copy Code
-                        </button>
-                      </header>
-                      <div>
-                        <pre>
-                          <code style={{ color: "#686B6E" }}></code>
-                        </pre>
-                      </div>
-
-                      <footer
-                        style={{
-                          background: "#191919",
-                          color: "white",
-                          borderRadius: "0 0 12px 12px",
-                          textAlign: "center",
-                          padding: "10px",
-                        }}
-                      ></footer>
+                          <path
+                            d="M14.5 6H15C16.1046 6 17 6.89543 17 8V15C17 16.1046 16.1046 17 15 17H8C6.89543 17 6 16.1046 6 15V14.5M3 12H10C11.1046 12 12 11.1046 12 10V3C12 1.89543 11.1046 1 10 1H3C1.89543 1 1 1.89543 1 3V10C1 11.1046 1.89543 12 3 12Z"
+                            stroke="#686B6E"
+                            strokeWidth="1.5"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          />
+                        </svg>
+                        Copy Code
+                      </button>
+                    </header>
+                    <div>
+                      <pre>
+                        <code style={{ color: "#686B6E" }}></code>
+                      </pre>
                     </div>
+
+                    <footer
+                      style={{
+                        background: "#191919",
+                        color: "white",
+                        borderRadius: "0 0 12px 12px",
+                        textAlign: "center",
+                        padding: "10px",
+                      }}
+                    ></footer>
                   </div>
+                </div>
 
-                  <div className="col-md-6 mt-3 d-flex flex-column">
-                    <div
-                      className="accordion-container"
-                      style={{ flexGrow: "1" }}
-                    >
-                      {/* Description Accordion */}
-                      <div className="accordion" id="accordionDescription">
-                        <div className="accordion-item">
-                          <h2
-                            className="accordion-header"
-                            id="headingDescription"
+                <div className="col-12 col-md-6 mt-3">
+                  <div className="accordion-container">
+                    {/* Description Accordion */}
+                    <div className="accordion" id="accordionDescription">
+                      <div className="accordion-item">
+                        <h2
+                          className="accordion-header"
+                          id="headingDescription"
+                        >
+                          <button
+                            className="accordion-button"
+                            type="button"
+                            onClick={() =>
+                              setIsDescriptionOpen(!isDescriptionOpen)
+                            }
+                            aria-expanded={isDescriptionOpen}
+                            aria-controls="collapseDescription"
                           >
-                            <button
-                              className="accordion-button"
-                              type="button"
-                              onClick={() =>
-                                setIsDescriptionOpen(!isDescriptionOpen)
-                              }
-                              aria-expanded={isDescriptionOpen}
-                              aria-controls="collapseDescription"
-                            >
-                              <i
-                                className={`bi bi-chevron-down accordion-icon ${
-                                  isDescriptionOpen ? "rotate-180" : ""
-                                }`}
-                              ></i>
-                              <span className="ms-2">Description</span>
-                            </button>
-                          </h2>
-                          <motion.div
-                            id="collapseDescription"
-                            className="accordion-collapse"
-                            initial={{ height: 0, opacity: 0 }}
-                            animate={{
-                              height: isDescriptionOpen ? "auto" : 0,
-                              opacity: isDescriptionOpen ? 1 : 0,
-                            }}
-                            transition={{ duration: 0.3, ease: "easeInOut" }}
-                          >
-                            <div className="accordion-body">
-                              Program to check if a given number N is an
-                              Armstrong number.
-                            </div>
-                          </motion.div>
-                        </div>
+                            <i
+                              className={`bi bi-chevron-down accordion-icon ${
+                                isDescriptionOpen ? "rotate-180" : ""
+                              }`}
+                            ></i>
+                            <span className="ms-2">Description</span>
+                          </button>
+                        </h2>
+                        <motion.div
+                          id="collapseDescription"
+                          className="accordion-collapse"
+                          initial={{ height: 0, opacity: 0 }}
+                          animate={{
+                            height: isDescriptionOpen ? "auto" : 0,
+                            opacity: isDescriptionOpen ? 1 : 0,
+                          }}
+                          transition={{ duration: 0.3, ease: "easeInOut" }}
+                        >
+                          <div className="accordion-body">
+                            Program to check if a given number N is an Armstrong
+                            number.
+                          </div>
+                        </motion.div>
                       </div>
+                    </div>
 
-                      {/* Review Accordion */}
-                      <div className="accordion" id="accordionReview">
-                        <div className="accordion-item">
-                          <h2 className="accordion-header" id="headingReview">
-                            <button
-                              className="accordion-button"
-                              type="button"
-                              onClick={() => setIsReviewOpen(!isReviewOpen)}
-                              aria-expanded={isReviewOpen}
-                              aria-controls="collapseReview"
-                            >
-                              <i
-                                className={`bi bi-chevron-down accordion-icon ${
-                                  isReviewOpen ? "rotate-180" : ""
-                                }`}
-                              ></i>
-                              <span className="ms-2">Review</span>
-                            </button>
-                          </h2>
-                          <motion.div
-                            id="collapseReview"
-                            className="accordion-collapse"
-                            initial={{ height: 0, opacity: 0 }}
-                            animate={{
-                              height: isReviewOpen ? "auto" : 0,
-                              opacity: isReviewOpen ? 1 : 0,
-                            }}
-                            transition={{ duration: 0.3, ease: "easeInOut" }}
+                    {/* Review Accordion */}
+                    <div className="accordion" id="accordionReview">
+                      <div className="accordion-item">
+                        <h2 className="accordion-header" id="headingReview">
+                          <button
+                            className="accordion-button"
+                            type="button"
+                            onClick={() => setIsReviewOpen(!isReviewOpen)}
+                            aria-expanded={isReviewOpen}
+                            aria-controls="collapseReview"
                           >
-                            <div className="accordion-body">
-                              <ReviewList reviews={reviews} />
-                            </div>
-                          </motion.div>
-                        </div>
+                            <i
+                              className={`bi bi-chevron-down accordion-icon ${
+                                isReviewOpen ? "rotate-180" : ""
+                              }`}
+                            ></i>
+                            <span className="ms-2">Review</span>
+                          </button>
+                        </h2>
+                        <motion.div
+                          id="collapseReview"
+                          className="accordion-collapse"
+                          initial={{ height: 0, opacity: 0 }}
+                          animate={{
+                            height: isReviewOpen ? "auto" : 0,
+                            opacity: isReviewOpen ? 1 : 0,
+                          }}
+                          transition={{ duration: 0.3, ease: "easeInOut" }}
+                        >
+                          <div className="accordion-body">
+                            <ReviewList reviews={reviews} />
+                          </div>
+                        </motion.div>
                       </div>
                     </div>
                   </div>
-
                 </div>
               </div>
             </div>

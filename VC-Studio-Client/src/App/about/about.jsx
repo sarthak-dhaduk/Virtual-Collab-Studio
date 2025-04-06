@@ -4,7 +4,6 @@ import Offer from "../../components/ui/Offer";
 import Choose from "../../components/ui/Choose";
 import Team from "../../components/ui/Team";
 import MainContent from "../../components/main-content";
-import Footer from "../../components/ui/Footer";
 
 const AboutPage = () => {
 
@@ -19,7 +18,6 @@ const AboutPage = () => {
             <Offer></Offer>
             <Choose></Choose>
             <Team></Team>
-            <Footer></Footer>
           </div>
         </div>
       </section>
