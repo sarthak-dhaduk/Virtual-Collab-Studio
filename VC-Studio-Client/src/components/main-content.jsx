@@ -343,40 +343,118 @@ const MainContent = ({ children, isLoggedIn }) => {
               {/* Code Editor Card */}
               <div className="card text-white mb-3">
                 <div className="card-header mt-2 d-flex justify-content-center align-items-center">
-                  {/* Add Post Button */}
                   <AddPostButton />
-                  {/* Language Dropdown */}
-                  {/* <DropdownLanguage
-                  options={languages}
-                  selectedOption={selectedLanguage}
-                  onOptionSelect={(lang) => setSelectedLanguage(lang)}
-                /> */}
-
                   <select
                     id="languageDropdown"
-                    className="dropdown ms-2 custom-btn"
+                    className="btn d-flex align-items-center justify-content-between"
                     onChange={(e) => setLanguage(e.target.value)}
+                    style={{ backgroundColor: "#0e1010", color: "#5f6b6e" }} // Updated background color and white text
                   >
-                    <option value="python">Python</option>
-                    <option value="javascript">JavaScript</option>
-                    <option value="csharp">C#</option>
-                    <option value="java">Java</option>
-                    <option value="cpp">C++</option>
-                    <option value="ruby">Ruby</option>
-                    <option value="go">Go</option>
-                    <option value="swift">Swift</option>
-                    <option value="rust">Rust</option>
-                    <option value="kotlin">Kotlin</option>
-                    <option value="php">PHP</option>
-                    <option value="sql">SQL</option>
-                    <option value="bash">Shell</option>
-                    <option value="haskell">Haskell</option>
-                    <option value="scala">Scala</option>
-                    <option value="perl">Perl</option>
-                    <option value="lua">Lua</option>
+                    <div className="dropdown-menu-lang show">
+                      <option
+                        value="python"
+                        style={{ backgroundColor: "#0e1010", color: "#fff" }}
+                      >
+                        Python
+                      </option>
+                      <option
+                        value="javascript"
+                        style={{ backgroundColor: "#0e1010", color: "#fff" }}
+                      >
+                        JavaScript
+                      </option>
+                      <option
+                        value="csharp"
+                        style={{ backgroundColor: "#0e1010", color: "#fff" }}
+                      >
+                        C#
+                      </option>
+                      <option
+                        value="java"
+                        style={{ backgroundColor: "#0e1010", color: "#fff" }}
+                      >
+                        Java
+                      </option>
+                      <option
+                        value="cpp"
+                        style={{ backgroundColor: "#0e1010", color: "#fff" }}
+                      >
+                        C++
+                      </option>
+                      <option
+                        value="ruby"
+                        style={{ backgroundColor: "#0e1010", color: "#fff" }}
+                      >
+                        Ruby
+                      </option>
+                      <option
+                        value="go"
+                        style={{ backgroundColor: "#0e1010", color: "#fff" }}
+                      >
+                        Go
+                      </option>
+                      <option
+                        value="swift"
+                        style={{ backgroundColor: "#0e1010", color: "#fff" }}
+                      >
+                        Swift
+                      </option>
+                      <option
+                        value="rust"
+                        style={{ backgroundColor: "#0e1010", color: "#fff" }}
+                      >
+                        Rust
+                      </option>
+                      <option
+                        value="kotlin"
+                        style={{ backgroundColor: "#0e1010", color: "#fff" }}
+                      >
+                        Kotlin
+                      </option>
+                      <option
+                        value="php"
+                        style={{ backgroundColor: "#0e1010", color: "#fff" }}
+                      >
+                        PHP
+                      </option>
+                      <option
+                        value="sql"
+                        style={{ backgroundColor: "#0e1010", color: "#fff" }}
+                      >
+                        SQL
+                      </option>
+                      <option
+                        value="bash"
+                        style={{ backgroundColor: "#0e1010", color: "#fff" }}
+                      >
+                        Shell
+                      </option>
+                      <option
+                        value="haskell"
+                        style={{ backgroundColor: "#0e1010", color: "#fff" }}
+                      >
+                        Haskell
+                      </option>
+                      <option
+                        value="scala"
+                        style={{ backgroundColor: "#0e1010", color: "#fff" }}
+                      >
+                        Scala
+                      </option>
+                      <option
+                        value="perl"
+                        style={{ backgroundColor: "#0e1010", color: "#fff" }}
+                      >
+                        Perl
+                      </option>
+                      <option
+                        value="lua"
+                        style={{ backgroundColor: "#0e1010", color: "#fff" }}
+                      >
+                        Lua
+                      </option>
+                    </div>
                   </select>
-
-                  {/* Run Button */}
                   <RunButton onClick={handleRunClick} />
                 </div>
 
@@ -422,32 +500,40 @@ const MainContent = ({ children, isLoggedIn }) => {
                       onClick={() => setIsTerminalVisible(false)}
                     ></button>
                   </div>
-                  <div className="card-body">
+                  <div className="card-body p-0">
                     <div
-                      className={`tab-pane fade ${
-                        activeTab === "output" ? "show active" : ""
+                      className={`${
+                        activeTab === "output" ? "d-block" : "d-none"
                       }`}
-                      id="output"
+                      style={{ height: "200px" }}
                     >
                       <textarea
                         id="outputBox"
-                        className="form-control"
+                        className="form-control h-100 border-0 rounded-0"
                         readOnly
                         placeholder="Output will appear here..."
-                        rows="6"
+                        style={{
+                          backgroundColor: "transparent",
+                          resize: "none",
+                          color: "#fff",
+                        }}
                       ></textarea>
                     </div>
                     <div
-                      className={`tab-pane fade ${
-                        activeTab === "input" ? "show active" : ""
+                      className={`${
+                        activeTab === "input" ? "d-block" : "d-none"
                       }`}
-                      id="input"
+                      style={{ height: "200px" }}
                     >
                       <textarea
                         id="stdinBox"
-                        className="form-control"
+                        className="form-control h-100 border-0 rounded-0"
                         placeholder="Enter input for your code here..."
-                        rows="4"
+                        style={{
+                          backgroundColor: "transparent",
+                          resize: "none",
+                          color: "#fff",
+                        }}
                       ></textarea>
                     </div>
                   </div>
