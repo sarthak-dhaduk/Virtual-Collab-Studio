@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import SignUp from './App/sign-up/signup';
 import SignIn from './App/sign-in/signin';
 import ForgotPassword from './App/forgot-password/forgotppass';
@@ -25,7 +25,8 @@ const App = () => {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<SignIn setIsLoggedIn={setIsLoggedIn} />} />
+        <Route path="/" element={<MainContent isLoggedIn={isLoggedIn} />} />
+        <Route path="/login" element={<SignIn setIsLoggedIn={setIsLoggedIn} />} />
         <Route path="/sign-up" element={<SignUp />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/reset-password" element={<ResetPass />} />

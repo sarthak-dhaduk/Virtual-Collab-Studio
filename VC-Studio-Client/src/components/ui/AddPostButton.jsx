@@ -2,7 +2,19 @@ import React from "react";
 
 const AddPostButton = () => {
     return (
-        <button className="btn d-flex align-items-center text-light custom-btn" data-bs-toggle="modal" data-bs-target="#addpostmodal">
+        <button 
+            className="btn d-flex align-items-center text-light custom-btn" 
+            data-bs-toggle="modal" 
+            data-bs-target="#addpostmodal"
+            style={{
+                borderColor: "#0D0F10",
+                borderRadius: "16px",
+                appearance: "none",
+                outline: "none",
+                boxShadow: "inset 0 0 10px rgba(255, 255, 255, 0.1)",
+                padding: "9px 14px"
+            }}
+        >
             <span style={{ color: "#686B6E" }}>Add Post</span>
             <svg
                 className="ms-2"

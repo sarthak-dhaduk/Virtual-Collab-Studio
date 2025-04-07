@@ -5,6 +5,14 @@ const RunButton = ({ onClick }) => {
         <button
             className="btn ms-2 d-flex align-items-center text-light custom-btn"
             onClick={onClick}
+            style={{
+                borderColor: "#0D0F10",
+                borderRadius: "16px",
+                appearance: "none",
+                outline: "none",
+                boxShadow: "inset 0 0 10px rgba(255, 255, 255, 0.1)",
+                padding: "9px 14px"
+            }}
         >
             <span style={{ color: "#686B6E" }}>Run</span>
             <svg
