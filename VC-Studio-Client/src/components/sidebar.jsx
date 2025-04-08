@@ -2,9 +2,18 @@ import React, { useState, useEffect, useRef } from "react";
 import { useLocation, Link } from "react-router-dom";
 import MainLogo from "./ui/MainLogo";
 import SidebarSection from "./ui/SidebarSection";
+import { getSessionProperty } from "../sessionUtils";
+import axios from "axios";
 
-const Sidebar = ({ isSidebarVisible, isLoggedIn, users }) => {
+const Sidebar = ({
+  setRoomId,
+  connectWebSocket,
+  isSidebarVisible,
+  isLoggedIn,
+  users,
+}) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [workspaces, setWorkspaces] = useState([]);
   const [openSections, setOpenSections] = useState({
     General: true,
     Members: true,
@@ -33,6 +42,26 @@ const Sidebar = ({ isSidebarVisible, isLoggedIn, users }) => {
       [title]: !prev[title],
     }));
   };
+
+  useEffect(() => {
+    const fetchWorkspaces = async () => {
+      try {
+        const userEmail = getSessionProperty("email");
+        if (userEmail) {
+          const response = await axios.get(
+            `http://localhost:8080/api/workspace/getAllWorkspace?email=${userEmail}`
+          );
+          setWorkspaces(response.data);
+        }
+      } catch (error) {
+        console.error("Error fetching workspaces:", error);
+      }
+    };
+
+    if (isLoggedIn) {
+      fetchWorkspaces();
+    }
+  }, [isLoggedIn]);
 
   const generalSection = {
     title: "General",
@@ -190,62 +219,70 @@ const Sidebar = ({ isSidebarVisible, isLoggedIn, users }) => {
 
   const workspaceSection = {
     title: "Workspace",
-    links: [
-      {
-        label: "12IJKM37",
-        icon: (
-          <svg
-            className="icon-shadow-green"
-            width="18"
-            height="18"
-            viewBox="0 0 18 18"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <rect
-              x="1.5"
-              y="1.5"
-              width="15"
-              height="15"
-              rx="3"
-              stroke="#B6F09C"
-              strokeWidth="1.5"
-              strokeLinecap="round"
-            />
-          </svg>
-        ),
-      },
-      {
-        label: "98US4XS2",
-        icon: (
-          <svg
-            className="icon-shadow-green"
-            width="18"
-            height="18"
-            viewBox="0 0 18 18"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <rect
-              x="1.5"
-              y="1.5"
-              width="15"
-              height="15"
-              rx="3"
-              stroke="#B6F09C"
-              strokeWidth="1.5"
-              strokeLinecap="round"
-            />
-          </svg>
-        ),
-      },
-    ],
+    links:
+      workspaces.length > 0
+        ? workspaces.map((workspace) => ({
+            label: workspace._id,
+            path: `/workspace/${workspace._id}`,
+            icon: (
+              <svg
+                className="icon-shadow-green"
+                width="18"
+                height="18"
+                viewBox="0 0 18 18"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <rect
+                  x="1.5"
+                  y="1.5"
+                  width="15"
+                  height="15"
+                  rx="3"
+                  stroke="#B6F09C"
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
+                />
+              </svg>
+            ),
+          }))
+        : [
+            {
+              label: "No workspaces found",
+              icon: (
+                <svg
+                  className="icon-shadow"
+                  width="18"
+                  height="18"
+                  viewBox="0 0 18 18"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <circle
+                    cx="9"
+                    cy="9"
+                    r="7.5"
+                    stroke="#ccc"
+                    strokeWidth="1.5"
+                  />
+                  <line
+                    x1="5"
+                    y1="9"
+                    x2="13"
+                    y2="9"
+                    stroke="#ccc"
+                    strokeWidth="1.5"
+                  />
+                </svg>
+              ),
+            },
+          ],
     isWorkspace: true,
   };
 
   // Determine which sections to show based on login status
-  const sections = isLoggedIn 
-    ? [generalSection, membersSection, workspaceSection] 
+  const sections = isLoggedIn
+    ? [generalSection, membersSection, workspaceSection]
     : [generalSection];
 
   return (
@@ -269,9 +306,17 @@ const Sidebar = ({ isSidebarVisible, isLoggedIn, users }) => {
       {/* Profile Section - Only show when logged in */}
       {isLoggedIn && (
         <div className="sidebar-profile">
-          <div className="profile-avatar">J</div>
+          <div className="profile-avatar">
+            {sessionStorage.getItem("user")
+              ? JSON.parse(sessionStorage.getItem("user")).username.charAt(0)
+              : "U"}
+          </div>
           <div className="profile-info">
-            <span className="profile-name">Jigar Kalariya</span>
+            <span className="profile-name">
+              {sessionStorage.getItem("user")
+                ? JSON.parse(sessionStorage.getItem("user")).username
+                : "Unknown"}
+            </span>
             <span className="profile-role">Dev</span>
           </div>
           <div className="profile-menu" ref={dropdownRef}>
@@ -314,7 +359,7 @@ const Sidebar = ({ isSidebarVisible, isLoggedIn, users }) => {
                     data-bs-toggle="modal"
                     data-bs-target="#profileSettingsModal"
                     onClick={() => {
-                      console.log("Logout clicked");
+                      console.log("Profile Settings clicked");
                       setIsDropdownOpen(false);
                     }}
                   >
@@ -339,8 +384,10 @@ const Sidebar = ({ isSidebarVisible, isLoggedIn, users }) => {
                   <button
                     className="dropdown-item d-flex justify-content-between align-items-center"
                     onClick={() => {
-                      console.log("Logout clicked");
-                      setIsDropdownOpen(false);
+                      // Destroy session and redirect to /sign-in
+                      sessionStorage.clear();
+                      localStorage.clear();
+                      window.location.href = "/login";
                     }}
                   >
                     <span>Logout</span>

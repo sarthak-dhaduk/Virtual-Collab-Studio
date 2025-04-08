@@ -3,6 +3,7 @@ import mongoose from "mongoose";
 import cors from "cors";
 import dotenv from "dotenv";
 import AuthController from "./Controllers/AuthController.js";
+import WorkspaceController from "./Controllers/WorkspaceController.js"
 import path from "path";
 import { fileURLToPath } from "url";
 import http from "http";
@@ -62,6 +63,7 @@ mongoose
 
 // API Routes
 app.use("/api/auth", AuthController);
+app.use("/api/workspace", WorkspaceController);
 
 
 // Error handling middleware

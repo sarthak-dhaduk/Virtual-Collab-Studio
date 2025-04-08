@@ -315,6 +315,8 @@ const MainContent = ({ children, isLoggedIn }) => {
           toggleSidebar={toggleSidebar}
           isLoggedIn={isLoggedIn}
           users={users}
+          setRoomId={setRoomId}
+          connectWebSocket={connectWebSocket}
         />
         <div
           className={`main-content ${
@@ -325,7 +327,8 @@ const MainContent = ({ children, isLoggedIn }) => {
             isSidebarVisible={isSidebarVisible}
             toggleSidebar={toggleSidebar}
           />
-          {window.location.pathname === "/dashboard" || window.location.pathname === "/" ? (
+          {window.location.pathname === "/dashboard" ||
+          window.location.pathname === "/" ? (
             <div>
               {/* Code Editor Card */}
               <div className="card text-white mb-3">

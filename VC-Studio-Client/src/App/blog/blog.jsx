@@ -90,7 +90,25 @@ const BlogPage = () => {
                     </header>
                     <div>
                       <pre>
-                        <code style={{ color: "#686B6E" }}></code>
+                        <code style={{ color: "#686B6E" }}>
+                          {`function isArmstrongNumber(num) {
+  const digits = num.toString().split('');
+  const power = digits.length;
+  const sum = digits.reduce((acc, digit) => {
+    return acc + Math.pow(Number(digit), power);
+  }, 0);
+  
+  return sum === num;
+}
+
+// Test
+const number = 153;
+if (isArmstrongNumber(number)) {
+  console.log(\`\${number} is an Armstrong number.\`);
+} else {
+  console.log(\`\${number} is not an Armstrong number.\`);
+}`}
+                        </code>
                       </pre>
                     </div>
 
