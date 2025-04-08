@@ -26,7 +26,11 @@ const SearchBar = ({ isSidebarVisible, toggleSidebar }) => {
                 <button className="btn bg-dark border-0 btn-primary me-2" style={{ marginTop:'-5px', borderRadius: '12px' }}>
                     <img src={Correct} alt="Main Logo" style={{ padding: '4px', width: '24px', height: '24px' }} className="w-auto h-auto" />
                 </button>
-                <button className="btn bg-dark border-0 btn-primary" style={{borderRadius: '12px' }} onClick={toggleSidebar}>
+                <button 
+                    className="btn bg-dark border-0 btn-primary sidebar-toggle-btn" 
+                    style={{borderRadius: '12px', position: 'relative', zIndex: 1060 }} 
+                    onClick={toggleSidebar}
+                >
                     {isSidebarVisible ? <i className="bi bi-layout-sidebar-inset" style={{ padding: '4px', fontSize: '22px' }}></i> : <i className="bi bi-layout-sidebar-inset-reverse" style={{ padding: '4px', fontSize: '22px' }}></i>}
                 </button>
             </div>

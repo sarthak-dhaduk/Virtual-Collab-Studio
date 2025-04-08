@@ -53,7 +53,7 @@ app.use(express.static(path.join(__dirname, "public")));
 
 // MongoDB Connection
 const mongoURI =
-  process.env.MONGO_URI || "mongodb://localhost:27017/Virtual-Collab-Studio";
+  process.env.MONGO_URI || "mongodb://127.0.0.1:27017/Virtual-Collab-Studio";
 mongoose.set("strictQuery", false);
 mongoose
   .connect(mongoURI, { useNewUrlParser: true, useUnifiedTopology: true })

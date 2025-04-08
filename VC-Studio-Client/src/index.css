@@ -113,11 +113,13 @@
   border-radius: 16px;
   gap: 10px;
 }
+
 .dropdown-container .dropdown-item {
     font-size: 14px;
     padding: 12px 15px;
     transition: 0.3s;
 }
+
 .dropdown-menu {
   position: fixed !important;
   margin-left: 17rem !important;
@@ -400,9 +402,33 @@
     width: 250px;
   }
 
+  /* Change the blur approach to be more targeted */
   .sidebar:not(.sidebar-hidden) ~ .main-content {
-    filter: blur(5px);
+    position: relative;
   }
+  
+  /* Apply blur to a pseudo-element instead of the entire content */
+  .sidebar:not(.sidebar-hidden) ~ .main-content::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+    z-index: 1040;
+    pointer-events: none;
+  }
+  
+  /* Ensure the toggle button stays above the blur */
+  .sidebar-toggle-btn {
+    position: relative;
+    z-index: 1060;
+    /* Add a subtle highlight to make it stand out */
+    box-shadow: 0 0 5px rgba(255, 255, 255, 0.3);
+  }
+  
   .contact-card {
     max-width: 100% !important;
   }
@@ -819,4 +845,116 @@ border-radius: 20px !important;
 }
 .modal-header {
   border-bottom: none !important;
+}
+
+.custom-dropdown {
+  width: 220px;
+  border-radius: 16px;
+  padding: 12px 15px;
+  background-color: #0D0F10;
+  border: none;
+  color: #fff;
+  font-size: 16px;
+  font-family: 'Arial', sans-serif;
+  appearance: none;
+  outline: none;
+  box-shadow: inset 0 0 10px rgba(255, 255, 255, 0.1);
+  /* Inner white shadow */
+  cursor: pointer;
+  position: relative;
+}
+
+/* Style the dropdown options */
+.custom-dropdown option {
+  background-color: #0D0F10;
+  /* Menu color */
+  color: #fff;
+  padding: 10px 15px;
+  font-size: 16px;
+  text-align: left;
+  box-shadow: inset 50px 50px 50px rgba(255, 255, 255, 100);
+  /* Simulating inner shadow */
+  cursor: pointer;
+}
+
+/* Hover effect for options */
+.custom-dropdown option:hover {
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0));
+  color: #fff;
+}
+
+/* Remove the scrollbar for dropdown */
+.custom-dropdown {
+  scrollbar-width: none;
+  /* For Firefox */
+}
+
+.custom-dropdown::-webkit-scrollbar {
+  display: none;
+  /* For Chrome, Safari, and Edge */
+}
+
+/* Monaco Editor Styles */
+.monaco-editor {
+  background-color: #131619 !important;
+}
+
+.monaco-editor .margin {
+  background-color: #131619 !important;
+}
+
+.monaco-editor .monaco-scrollable-element {
+  background-color: #131619 !important;
+}
+
+.monaco-editor .view-lines {
+  background-color: #0d0f10 !important;
+}
+
+.monaco-editor .cursor {
+  background-color: #ffffff !important;
+}
+
+.minimap {
+  background-color: #0d0f10 !important;
+}
+
+.margin-view-overlays {
+  background-color: #0d0f10 !important;
+}
+
+.minimap-shadow-hidden {
+  background-color: #0d0f10 !important;
+}
+
+.monaco-editor .scrollbar {
+  background-color: #0d0f10 !important;
+}
+
+.slider-mouseover {
+  background-color: #0d0f10 !important;
+}
+
+.decorationsOverviewRuler {
+  background-color: #0d0f10 !important;
+}
+
+.invisible.scrollbar.vertical.fade {
+  background-color: #0d0f10 !important;
+}
+
+.minimap-slider {
+  background-color: #0d0f10 !important;
+}
+
+/* .minimap-slider-horizontal {
+  background-color: #0d0f10 !important;
+} */
+
+.minimap-decorations-layer {
+  background-color: #0d0f10 !important;
+}
+
+.monaco-editor .minimap canvas {
+  /* background-color: #0d0f10 !important; */
 }

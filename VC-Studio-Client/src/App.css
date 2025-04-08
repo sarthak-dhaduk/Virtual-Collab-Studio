@@ -355,3 +355,23 @@ input.hidden-checkbox+span {
 .top-bar img {
   height: 30px;
 }
+
+/* Sidebar Sign In Button */
+.sidebar-signin {
+  margin-top: auto;
+  padding: 15px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.sidebar-signin .btn-primary {
+  background: linear-gradient(90deg, #4a90e2 0%, #5c6bc0 100%);
+  border: none;
+  padding: 10px 15px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.sidebar-signin .btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}

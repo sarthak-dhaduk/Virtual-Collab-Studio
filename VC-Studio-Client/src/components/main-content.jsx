@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef } from "react";
-import Sidebar from "./Sidebar";
+import Sidebar from "./sidebar";
 import SearchBar from "./ui/SearchBar";
-import Footer from "./ui/Footer";
+import Footer from "./ui/footer";
 import JoinModal from "./modals/JoinModal";
 import AddPostModal from "./modals/AddPosts";
 import CreateRoom from "./modals/CreateRoom";
@@ -21,7 +21,6 @@ const MainContent = ({ children, isLoggedIn }) => {
     window.innerWidth > 768
   );
 
-  const [showContent, setShowContent] = useState(false);
   const [language, setLanguage] = useState("python");
   const [editorInstance, setEditorInstance] = useState(null);
   const [roomId, setRoomId] = useState("");
@@ -64,10 +63,6 @@ const MainContent = ({ children, isLoggedIn }) => {
 
   // Using useRef for WebSocket to ensure it's always available
   const wsRef = useRef(null);
-
-  useEffect(() => {
-    setShowContent(isLoggedIn);
-  }, [isLoggedIn]);
 
   const generateRoomId = () =>
     Math.random().toString(36).substr(2, 8).toUpperCase();
@@ -315,20 +310,12 @@ const MainContent = ({ children, isLoggedIn }) => {
         />
       )}
       <div className="dashboard-container d-flex">
-        {showContent ? (
-          <Sidebar
-            isSidebarVisible={isSidebarVisible}
-            toggleSidebar={toggleSidebar}
-            isLoggedIn={isLoggedIn}
-            users={users}
-          />
-        ) : (
-          <Sidebar
-            isSidebarVisible={isSidebarVisible}
-            toggleSidebar={toggleSidebar}
-            isLoggedIn={isLoggedIn}
-          />
-        )}
+        <Sidebar
+          isSidebarVisible={isSidebarVisible}
+          toggleSidebar={toggleSidebar}
+          isLoggedIn={isLoggedIn}
+          users={users}
+        />
         <div
           className={`main-content ${
             isSidebarVisible ? "expanded" : "collapsed"
@@ -338,7 +325,7 @@ const MainContent = ({ children, isLoggedIn }) => {
             isSidebarVisible={isSidebarVisible}
             toggleSidebar={toggleSidebar}
           />
-          {window.location.pathname === "/dashboard" ? (
+          {window.location.pathname === "/dashboard" || window.location.pathname === "/" ? (
             <div>
               {/* Code Editor Card */}
               <div className="card text-white mb-3">
@@ -346,7 +333,7 @@ const MainContent = ({ children, isLoggedIn }) => {
                   <AddPostButton />
                   <select
                     id="languageDropdown"
-                    className="btn d-flex align-items-center justify-content-between"
+                    className="btn d-flex ms-2 align-items-center justify-content-between custom-dropdown"
                     onChange={(e) => setLanguage(e.target.value)}
                     style={{ backgroundColor: "#0e1010", color: "#5f6b6e" }} // Updated background color and white text
                   >
