@@ -3,7 +3,7 @@ import Input from "../../components/ui/input";
 import Button from "../../components/ui/button";
 import Textarea from "../../components/ui/textarea";
 
-const AddPosts = () => {
+const AddPosts = ({ editorInstance }) => {
     const [formData, setFormData] = useState({
         title: "",
         description: "",
@@ -17,9 +17,97 @@ const AddPosts = () => {
         }));
     };
 
-    const handleSubmit = (e) => {
+    const closeModal = () => {
+        // Get the modal element
+        const modal = document.getElementById("addpostmodal");
+        
+        // Remove all modal backdrops
+        const backdrops = document.getElementsByClassName('modal-backdrop');
+        while (backdrops.length > 0) {
+            backdrops[0].remove();
+        }
+        
+        // Remove modal-specific classes and inline styles
+        document.body.classList.remove('modal-open');
+        document.body.style.removeProperty('overflow');
+        document.body.style.removeProperty('padding-right');
+        
+        // Hide modal
+        if (modal) {
+            modal.classList.remove('show');
+            modal.style.display = 'none';
+            modal.setAttribute('aria-hidden', 'true');
+            modal.removeAttribute('aria-modal');
+            modal.removeAttribute('role');
+        }
+        
+        // Force cleanup of any remaining modal classes
+        setTimeout(() => {
+            document.body.classList.remove('modal-open');
+            const remainingBackdrops = document.querySelectorAll('.modal-backdrop');
+            remainingBackdrops.forEach(backdrop => backdrop.remove());
+        }, 100);
+    };
+
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log("Post Data:", formData);
+        
+        try {
+            const user = JSON.parse(sessionStorage.getItem("user"));
+            if (!user || !user.email) {
+                alert("Please login first!");
+                return;
+            }
+
+            // Get code from editor
+            const codeSnippet = editorInstance ? editorInstance.getValue() : "";
+            // Get selected programming language
+            const languageDropdown = document.getElementById("languageDropdown");
+            const programmingLanguage = languageDropdown ? languageDropdown.value : "python";
+
+            const blogData = {
+                Email: user.email,
+                Title: formData.title,
+                Description: formData.description,
+                ProgrammingLanguage: programmingLanguage,
+                CodeSnippet: codeSnippet
+            };
+
+            const response = await fetch("http://localhost:8080/api/blog/createBlog", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(blogData),
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+                // Clear form
+                setFormData({
+                    title: "",
+                    description: "",
+                });
+                
+                // Close modal and clean up
+                closeModal();
+                
+                // Additional cleanup after a short delay
+                setTimeout(() => {
+                    const remainingBackdrops = document.querySelectorAll('.modal-backdrop');
+                    remainingBackdrops.forEach(backdrop => backdrop.remove());
+                    document.body.classList.remove('modal-open');
+                    document.body.style.removeProperty('overflow');
+                    document.body.style.removeProperty('padding-right');
+                }, 150);
+            } else {
+                throw new Error(data.message || "Failed to create blog post");
+            }
+        } catch (error) {
+            console.error("Error creating blog post:", error);
+            alert(error.message);
+        }
     };
 
     return (
@@ -29,6 +117,8 @@ const AddPosts = () => {
             tabIndex="-1"
             aria-labelledby="exampleModalLabel"
             aria-hidden="true"
+            data-bs-backdrop="true"
+            data-bs-keyboard="true"
         >
             <div className="modal-dialog modal-dialog-centered">
                 <div
@@ -44,7 +134,7 @@ const AddPosts = () => {
                             type="button"
                             className="btn-close"
                             style={{ filter: "invert(1)" }}
-                            data-bs-dismiss="modal"
+                            onClick={closeModal}
                             aria-label="Close"
                         ></button>
                     </div>
@@ -79,7 +169,6 @@ const AddPosts = () => {
                                     label="Description"
                                     className="custom-textarea p-1"
                                 />
-
                             </div>
                         </form>
                     </div>
@@ -110,9 +199,7 @@ const AddPosts = () => {
                             onClick={handleSubmit}
                             type="submit"
                             className="btn-main btn-create d-flex align-items-center w-25 justify-content-center"
-                           
-                        >
-                        </Button>
+                        />
                     </div>
                 </div>
             </div>

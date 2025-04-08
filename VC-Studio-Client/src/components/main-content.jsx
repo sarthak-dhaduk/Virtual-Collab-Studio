@@ -534,7 +534,7 @@ const MainContent = ({ children, isLoggedIn }) => {
             children
           )}
           <Toast message={toastMessage} />
-          <AddPostModal />
+          <AddPostModal editorInstance={editorInstance} />
           <JoinModal
             roomId={roomId}
             setRoomId={setRoomId}
