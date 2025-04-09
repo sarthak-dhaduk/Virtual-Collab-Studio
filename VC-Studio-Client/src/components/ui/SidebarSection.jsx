@@ -42,11 +42,16 @@ const SidebarSection = ({
             key={index}
             className={`section-item ${
               link.path === currentPath ? "active" : ""
-            }`} // Add active class conditionally
+            }`}
           >
             {link.icon && <span className="item-icon">{link.icon}</span>}
             {isWorkspace ? (
-              <span className="workspace-item">{link.label}</span>
+              <button
+                className="bg-transparent border-0 text-start item-link"
+                onClick={link.onClick || (() => {})}
+              >
+                {link.label}
+              </button>
             ) : (
               <Link to={link.path || "#"} className="item-link">
                 {link.label}
@@ -61,7 +66,7 @@ const SidebarSection = ({
             <Link to="/login" className="item-link ms-1 d-flex align-items-center">
               <span className="item-icon">
                 <svg width="18" height="18" className="icon-shadow" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M7.00097 17.0059H3.00097C1.8964 17.0059 1.00097 16.1104 1.00097 15.0059V3.00586C1.00097 1.90129 1.8964 1.00586 3.00097 1.00586L7.00097 1.00586M6.00097 9.00586L10.001 5.00586M6.00097 9.00586L10.001 13.0059M6.00097 9.00586H17.001" stroke="#686B6E" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                  <path d="M7.00097 17.0059H3.00097C1.8964 17.0059 1.00097 16.1104 1.00097 15.0059V3.00586C1.00097 1.90129 1.8964 1.00586 3.00097 1.00586L7.00097 1.00586M6.00097 9.00586L10.001 5.00586M6.00097 9.00586L10.001 13.0059M6.00097 9.00586H17.001" stroke="#686B6E" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
               </span>
               <span className="ms-2">Sign In</span>
