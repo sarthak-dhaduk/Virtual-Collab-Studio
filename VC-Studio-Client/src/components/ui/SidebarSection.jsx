@@ -1,7 +1,12 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 
 const SidebarSection = ({
+  setRoomId,
+  connectWebSocket,
+  generateRoomId,
+  createNewWorkspace,
+  setWorkspacesID,
   title,
   links,
   isWorkspace,
@@ -10,6 +15,26 @@ const SidebarSection = ({
   currentPath, // Receive the current path
   signInButton, // Add this prop to handle the sign in button
 }) => {
+  const [isCreating, setIsCreating] = useState(false);
+  const [loadingWorkspaceId, setLoadingWorkspaceId] = useState(null);
+
+  const handleCreateRoom = async () => {
+    if (isCreating) return;
+
+    setIsCreating(true);
+    try {
+      const generatedRoomId = generateRoomId();
+      await createNewWorkspace(generatedRoomId);
+      setRoomId(generatedRoomId);
+      setWorkspacesID(generatedRoomId);
+      connectWebSocket(generatedRoomId);
+    } catch (error) {
+      console.error("Error creating workspace:", error);
+    } finally {
+      setIsCreating(false);
+    }
+  };
+
   return (
     <div className="sidebar-section">
       <div
@@ -48,9 +73,21 @@ const SidebarSection = ({
             {isWorkspace ? (
               <button
                 className="bg-transparent border-0 text-start item-link"
-                onClick={link.onClick || (() => {})}
+                onClick={() => {
+                  // Set loading state immediately
+                  setLoadingWorkspaceId(link._id);
+
+                  // Execute the original click handler
+                  if (link.onClick) link.onClick();
+
+                  // Clear loading state after 1.5 seconds
+                  setTimeout(() => {
+                    setLoadingWorkspaceId(null);
+                  }, 2000);
+                }}
+                disabled={loadingWorkspaceId === link._id}
               >
-                {link.label}
+                {loadingWorkspaceId === link._id ? "Loading..." : link.label}
               </button>
             ) : (
               <Link to={link.path || "#"} className="item-link">
@@ -59,21 +96,37 @@ const SidebarSection = ({
             )}
           </li>
         ))}
-        
+
         {/* Add Sign In button in the General section for non-logged in users */}
         {signInButton && title === "General" && (
           <li className="section-item">
-            <Link to="/login" className="item-link ms-1 d-flex align-items-center">
+            <Link
+              to="/login"
+              className="item-link ms-1 d-flex align-items-center"
+            >
               <span className="item-icon">
-                <svg width="18" height="18" className="icon-shadow" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M7.00097 17.0059H3.00097C1.8964 17.0059 1.00097 16.1104 1.00097 15.0059V3.00586C1.00097 1.90129 1.8964 1.00586 3.00097 1.00586L7.00097 1.00586M6.00097 9.00586L10.001 5.00586M6.00097 9.00586L10.001 13.0059M6.00097 9.00586H17.001" stroke="#686B6E" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                <svg
+                  width="18"
+                  height="18"
+                  className="icon-shadow"
+                  viewBox="0 0 18 18"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M7.00097 17.0059H3.00097C1.8964 17.0059 1.00097 16.1104 1.00097 15.0059V3.00586C1.00097 1.90129 1.8964 1.00586 3.00097 1.00586L7.00097 1.00586M6.00097 9.00586L10.001 5.00586M6.00097 9.00586L10.001 13.0059M6.00097 9.00586H17.001"
+                    stroke="#686B6E"
+                    strokeWidth="1.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
                 </svg>
               </span>
               <span className="ms-2">Sign In</span>
             </Link>
           </li>
         )}
-        
+
         {isWorkspace && (
           <li className="">
             <button
@@ -88,7 +141,7 @@ const SidebarSection = ({
                 fontSize: "14px",
               }}
               onClick={() => {
-                console.log("Create New Workspace clicked!");
+                handleCreateRoom();
               }}
             >
               <svg
