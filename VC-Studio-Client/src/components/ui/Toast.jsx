@@ -13,7 +13,7 @@ function Toast({ message, type = "warning" }) {
 
         // ✅ Ensure Bootstrap JS is loaded before showing the toast
         if (window.bootstrap) {
-          const toast = new window.bootstrap.Toast(toastElement, { delay: 4000 });
+          const toast = new window.bootstrap.Toast(toastElement, { delay: 6000 });
           toast.show();
         } else {
           console.error("Bootstrap is not loaded. Make sure to include Bootstrap JS.");

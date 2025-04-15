@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef, useCallback } from "react";
 import Sidebar from "./sidebar";
 import SearchBar from "./ui/SearchBar";
 import Footer from "./ui/footer";
@@ -7,7 +7,6 @@ import AddPostModal from "./modals/AddPosts";
 import CreateRoom from "./modals/CreateRoom";
 import ProfileSetting from "./modals/ProfileSetting";
 import AddReview from "./modals/AddReview";
-
 import AddPostButton from "./ui/AddPostButton";
 import DropdownLanguage from "./ui/DropdownLanguage";
 import RunButton from "./ui/RunButton";
@@ -15,6 +14,8 @@ import CodeEditor from "./ui/CodeEditor";
 import MouseTracker from "./ui/MouseTracker";
 import "bootstrap/dist/css/bootstrap.min.css";
 import Toast from "./ui/Toast";
+import axios from "axios";
+import { getSessionProperty } from "../sessionUtils";
 
 const MainContent = ({ children, isLoggedIn }) => {
   const [isSidebarVisible, setIsSidebarVisible] = useState(
@@ -37,26 +38,10 @@ const MainContent = ({ children, isLoggedIn }) => {
   const [activeTab, setActiveTab] = useState("output");
   const [isTerminalVisible, setIsTerminalVisible] = useState(false);
   const terminalRef = useRef(null);
+  const [workspacesdata, setWorkspacesdata] = useState(null);
+  const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
 
-  const languages = [
-    "python",
-    "javascript",
-    "c#",
-    "java",
-    "c++",
-    "ruby",
-    "go",
-    "swift",
-    "rust",
-    "kotlin",
-    "php",
-    "sql",
-    "shell",
-    "haskell",
-    "scala",
-    "perl",
-    "lua",
-  ];
+  const userEmail = getSessionProperty("email");
 
   const userEmailForMouse =
     JSON.parse(sessionStorage.getItem("user"))?.email || "Unknown";
@@ -78,6 +63,7 @@ const MainContent = ({ children, isLoggedIn }) => {
   // WebSocket connection and initialization
   const connectWebSocket = (newRoomId) => {
     if (wsRef.current) {
+      wsRef.current.intentionalClose = true;
       wsRef.current.close();
     }
 
@@ -139,11 +125,20 @@ const MainContent = ({ children, isLoggedIn }) => {
       }
     };
 
+    // newWs.onclose = () => {
+    //   console.log("WebSocket closed");
+    //   wsRef.current = null;
+    //   // Try to reconnect after a short delay
+    //   setTimeout(() => connectWebSocket(newRoomId), 1000);
+    // };
+
     newWs.onclose = () => {
       console.log("WebSocket closed");
+      // Reconnect only if the closure was unintentional
+      if (!newWs.intentionalClose) {
+        setTimeout(() => connectWebSocket(newRoomId), 1000);
+      }
       wsRef.current = null;
-      // Try to reconnect after a short delay
-      setTimeout(() => connectWebSocket(newRoomId), 1000);
     };
   };
 
@@ -195,21 +190,45 @@ const MainContent = ({ children, isLoggedIn }) => {
     document.body.appendChild(loaderScript);
   };
 
+  useEffect(() => {
+    if (editorRef.current && workspacesdata) {
+      suppressEditorChanges.current = true;
+      editorRef.current.setValue(workspacesdata.CodeSnippet || "");
+      suppressEditorChanges.current = false;
+      setHasUnsavedChanges(false);
+    }
+
+    if (workspacesdata && workspacesdata.ProgrammingLanguage) {
+      setLanguage(workspacesdata.ProgrammingLanguage);
+    }
+  }, [workspacesdata]);
+
   // Monaco Editor Initialization
   const initializeEditor = () => {
-    if (!containerRef.current || editorRef.current) return;
+    if (!containerRef.current) return;
+
+    // Dispose of existing editor if it exists
+    if (editorRef.current) {
+      editorRef.current.dispose();
+    }
 
     editorRef.current = monaco.editor.create(containerRef.current, {
-      value: "// Start coding here...\n",
-      language,
+      value: workspacesdata?.CodeSnippet || "",
+      language: workspacesdata?.ProgrammingLanguage || language,
       theme: "vs-dark",
       automaticLayout: true,
     });
 
     setEditorInstance(editorRef.current);
 
+    // Set initial unsaved changes state
+    if (workspacesdata) {
+      setHasUnsavedChanges(
+        editorRef.current.getValue() !== workspacesdata.CodeSnippet
+      );
+    }
+
     editorRef.current.onDidChangeModelContent(() => {
-      // Only send content when the WebSocket is open and not suppressing changes
       if (
         wsRef.current &&
         wsRef.current.readyState === WebSocket.OPEN &&
@@ -218,12 +237,182 @@ const MainContent = ({ children, isLoggedIn }) => {
         console.log("Sending content to WebSocket...");
         const content = editorRef.current.getValue();
         wsRef.current.send(content); // Send editor content to server
+        if (workspacesdata && content !== workspacesdata.CodeSnippet) {
+          setHasUnsavedChanges(true);
+        } else {
+          setHasUnsavedChanges(false);
+        }
       } else {
         console.log("ws = ", wsRef.current);
         console.log("suppressing changes = ", !suppressEditorChanges.current);
         console.log("WebSocket is not ready.");
       }
     });
+  };
+
+  // Wrap your handleSaveClick in useCallback to prevent unnecessary re-renders
+  const handleSaveClick = useCallback(async () => {
+    if (!workspacesdata || !editorRef.current) return;
+
+    try {
+      const updatedContent = editorRef.current.getValue();
+      const userEmail = getSessionProperty("email");
+
+      if (!userEmail) {
+        showToast("User email not found. Please login again.");
+        return;
+      }
+
+      const response = await axios.put(
+        "http://localhost:8080/api/workspace/updateWorkspace",
+        {
+          id: workspacesdata._id, // Using _id from the workspace data
+          Email: userEmail,
+          ProgrammingLanguage: language, // Using current selected language
+          CodeSnippet: updatedContent,
+        }
+      );
+
+      // Update local state with the updated workspace data
+      setWorkspacesdata(response.data.workspace);
+      setHasUnsavedChanges(false);
+      showToast("Changes saved successfully");
+
+      // Optional: Update the workspaces list in the sidebar if needed
+      // You might want to add a state update here if you maintain a list of workspaces
+    } catch (error) {
+      console.error("Error saving workspace:", error);
+      let errorMessage = "Failed to save changes";
+
+      if (error.response) {
+        if (error.response.status === 404) {
+          errorMessage = "Workspace not found";
+        } else if (error.response.data?.message) {
+          errorMessage = error.response.data.message;
+        }
+      }
+
+      showToast(errorMessage);
+    }
+  }, [workspacesdata, editorRef.current, language]); // Add dependencies used in the function
+
+  // Add this useEffect hook in your MainContent component
+  useEffect(() => {
+    const handleKeyPress = (e) => {
+      // Check for Ctrl/Cmd + S
+      if ((e.ctrlKey || e.metaKey) && e.key === "s") {
+        e.preventDefault(); // Prevent default browser save behavior
+        handleSaveClick();
+      }
+    };
+
+    // Add event listener
+    window.addEventListener("keydown", handleKeyPress);
+
+    // Remove event listener on cleanup
+    return () => window.removeEventListener("keydown", handleKeyPress);
+  }, [handleSaveClick]); // Add handleSaveClick as a dependency
+
+  const handleSaveClickBtn = async () => {
+    if (!workspacesdata || !editorRef.current) return;
+
+    try {
+      const updatedContent = editorRef.current.getValue();
+      const userEmail = getSessionProperty("email");
+
+      if (!userEmail) {
+        showToast("User email not found. Please login again.");
+        return;
+      }
+
+      const response = await axios.put(
+        "http://localhost:8080/api/workspace/updateWorkspace",
+        {
+          id: workspacesdata._id, // Using _id from the workspace data
+          Email: userEmail,
+          ProgrammingLanguage: language, // Using current selected language
+          CodeSnippet: updatedContent,
+        }
+      );
+
+      // Update local state with the updated workspace data
+      setWorkspacesdata(response.data.workspace);
+      setHasUnsavedChanges(false);
+      showToast("Changes saved successfully");
+
+      // Optional: Update the workspaces list in the sidebar if needed
+      // You might want to add a state update here if you maintain a list of workspaces
+    } catch (error) {
+      console.error("Error saving workspace:", error);
+      let errorMessage = "Failed to save changes";
+
+      if (error.response) {
+        if (error.response.status === 404) {
+          errorMessage = "Workspace not found";
+        } else if (error.response.data?.message) {
+          errorMessage = error.response.data.message;
+        }
+      }
+
+      showToast(errorMessage);
+    }
+  };
+
+  const createNewWorkspace = async (workspaceId) => {
+    try {
+      const userEmail = getSessionProperty("email");
+      if (!userEmail) {
+        showToast("User email not found. Please login again.");
+        return;
+      }
+
+      // Get current editor content and language
+      const currentContent = editorRef.current?.getValue() || "";
+      const currentLanguage = language;
+
+      const response = await axios.post(
+        "http://localhost:8080/api/workspace/createWorkspace",
+        {
+          _id: workspaceId,
+          Email: userEmail,
+          ProgrammingLanguage: currentLanguage,
+          CodeSnippet: currentContent,
+        }
+      );
+
+      // Update local state with the new workspace data
+      setWorkspacesdata(response.data.workspace);
+      showToast("New workspace created successfully");
+
+      // Connect to WebSocket with the new workspace ID
+      connectWebSocket(workspaceId);
+      setRoomId(workspaceId);
+
+      return response.data.workspace;
+    } catch (error) {
+      console.error("Error creating workspace:", error);
+      let errorMessage = "Failed to create workspace";
+
+      if (error.response) {
+        if (error.response.status === 400) {
+          if (
+            error.response.data.message ===
+            "Workspace with this ID already exists"
+          ) {
+            errorMessage = "Workspace ID already exists";
+          } else if (
+            error.response.data.message?.includes("Cannot create more than")
+          ) {
+            errorMessage = error.response.data.message;
+          }
+        } else if (error.response.data?.message) {
+          errorMessage = error.response.data.message;
+        }
+      }
+
+      showToast(errorMessage);
+      throw error;
+    }
   };
 
   useEffect(() => {
@@ -239,7 +428,7 @@ const MainContent = ({ children, isLoggedIn }) => {
         editorRef.current = null;
       }
     };
-  }, [language]);
+  }, [language, workspacesdata]); // Add workspacesdata as a dependency
 
   useEffect(() => {
     const handleResize = () => {
@@ -315,8 +504,11 @@ const MainContent = ({ children, isLoggedIn }) => {
           toggleSidebar={toggleSidebar}
           isLoggedIn={isLoggedIn}
           users={users}
+          setWorkspacesdata={setWorkspacesdata}
           setRoomId={setRoomId}
           connectWebSocket={connectWebSocket}
+          generateRoomId={generateRoomId}
+          createNewWorkspace={createNewWorkspace}
         />
         <div
           className={`main-content ${
@@ -333,12 +525,20 @@ const MainContent = ({ children, isLoggedIn }) => {
               {/* Code Editor Card */}
               <div className="card text-white mb-3">
                 <div className="card-header mt-2 d-flex justify-content-center align-items-center">
-                  <AddPostButton />
+                  <div className="d-flex">
+                    <AddPostButton />
+                  </div>
                   <select
                     id="languageDropdown"
                     className="btn d-flex ms-2 align-items-center justify-content-between custom-dropdown"
                     onChange={(e) => setLanguage(e.target.value)}
-                    style={{ backgroundColor: "#0e1010", color: "#5f6b6e" }} // Updated background color and white text
+                    value={language}
+                    style={{
+                      backgroundColor: "#0e1010",
+                      color: "#5f6b6e",
+                      borderRadius: "16px",
+                      padding: "9px 14px",
+                    }} // Updated background color and white text
                   >
                     <div className="dropdown-menu-lang show">
                       <option
@@ -445,6 +645,50 @@ const MainContent = ({ children, isLoggedIn }) => {
                       </option>
                     </div>
                   </select>
+                  {workspacesdata && (
+                    <button
+                      className="btn ms-2 d-flex align-items-center text-light custom-btn"
+                      style={{
+                        borderColor: "#0D0F10",
+                        borderRadius: "16px",
+                        appearance: "none",
+                        outline: "none",
+                        boxShadow: "inset 0 0 10px rgba(255, 255, 255, 0.1)",
+                        padding: "9px 14px",
+                      }}
+                      onClick={handleSaveClickBtn}
+                    >
+                      {hasUnsavedChanges && (
+                        <div
+                          className="mx-2"
+                          style={{
+                            width: "8px",
+                            height: "8px",
+                            borderRadius: "50%",
+                            backgroundColor: "#fff",
+                            alignSelf: "center",
+                          }}
+                        />
+                      )}
+                      <span style={{ color: "#686B6E" }}>Save</span>
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="18"
+                        height="18"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="#686b6e"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        className="feather feather-save ms-2"
+                      >
+                        <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z" />
+                        <polyline points="17 21 17 13 7 13 7 21" />
+                        <polyline points="7 3 7 8 15 8" />
+                      </svg>
+                    </button>
+                  )}
                   <RunButton onClick={handleRunClick} />
                 </div>
 
@@ -540,11 +784,7 @@ const MainContent = ({ children, isLoggedIn }) => {
             setRoomId={setRoomId}
             connectWebSocket={connectWebSocket}
           />
-          <CreateRoom
-            setRoomId={setRoomId}
-            connectWebSocket={connectWebSocket}
-            generateRoomId={generateRoomId}
-          />
+          <CreateRoom setRoomId={roomId} />
           <ProfileSetting />
           <AddReview />
           <Footer />

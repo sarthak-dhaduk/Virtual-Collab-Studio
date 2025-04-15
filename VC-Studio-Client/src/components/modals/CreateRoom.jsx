@@ -1,19 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 
-const CreateRoom = ({ setRoomId, connectWebSocket, generateRoomId }) => {
-  const [newRoomId, setNewRoomId] = useState(); // State to hold the new room ID
-  const createRoom = () => {
-    const generatedRoomId = generateRoomId();
-    setNewRoomId(generatedRoomId);
-    setRoomId(generatedRoomId);
-    connectWebSocket(generatedRoomId);
-  };
-
+const CreateRoom = ({ setRoomId }) => {
   useEffect(() => {
     const modal = document.getElementById("create-room-modal");
-    const handleShow = () => {
-      createRoom();
-    };
+    const handleShow = () => {};
 
     modal?.addEventListener("shown.bs.modal", handleShow);
 
@@ -96,7 +86,7 @@ const CreateRoom = ({ setRoomId, connectWebSocket, generateRoomId }) => {
                     outline: "none",
                   }}
                   placeholder="02JK17SD"
-                  value={newRoomId} // Set the input value to the roomId state
+                  value={setRoomId} // Set the input value to the roomId state
                   readOnly
                   aria-label="Workspace Code"
                   className="form-control"
@@ -116,7 +106,7 @@ const CreateRoom = ({ setRoomId, connectWebSocket, generateRoomId }) => {
                   alignItems: "center",
                   justifyContent: "center",
                 }}
-                onClick={() => navigator.clipboard.writeText(newRoomId)}
+                onClick={() => navigator.clipboard.writeText(setRoomId)}
               >
                 <span className="me-2">
                   <svg

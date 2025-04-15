@@ -6,14 +6,18 @@ import { getSessionProperty } from "../sessionUtils";
 import axios from "axios";
 
 const Sidebar = ({
+  generateRoomId,
+  createNewWorkspace,
   setRoomId,
   connectWebSocket,
   isSidebarVisible,
   isLoggedIn,
   users,
+  setWorkspacesdata,
 }) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [workspaces, setWorkspaces] = useState([]);
+  const [setWorkspacesId, setWorkspacesID] = useState("");
   const [openSections, setOpenSections] = useState({
     General: true,
     Members: true,
@@ -58,10 +62,39 @@ const Sidebar = ({
       }
     };
 
-    if (isLoggedIn) {
+    if (isLoggedIn || setWorkspacesId !== "") {
+      fetchWorkspaces();
+    } else {
       fetchWorkspaces();
     }
-  }, [isLoggedIn]);
+  }, [isLoggedIn, setWorkspacesId]);
+
+  const fetchWorkspaceById = async (workspaceId) => {
+    try {
+      const userEmail = getSessionProperty("email");
+      
+      if (!userEmail) {
+        showToast("User email not found. Please login again.");
+        return;
+      }
+  
+      const response = await axios.get(
+        `http://localhost:8080/api/workspace/getSingleWorkspace?email=${userEmail}&id=${workspaceId}`
+      );
+  
+      if (response.data) {
+        setWorkspacesdata(response.data);
+        console.log("Workspace data fetched:", response.data);
+      }
+    } catch (error) {
+      console.error("Error fetching workspace:", error);
+      if (error.response?.status === 404) {
+        showToast("Workspace not found");
+      } else {
+        showToast("Failed to fetch workspace");
+      }
+    }
+  };
 
   const generalSection = {
     title: "General",
@@ -248,7 +281,8 @@ const Sidebar = ({
             onClick: () => {
               setRoomId(workspace._id); // Set the room ID
               connectWebSocket(workspace._id); // Connect to WebSocket with this ID
-            }
+              fetchWorkspaceById(workspace._id); // Set the workspace data
+            },
           }))
         : [
             {
@@ -287,7 +321,7 @@ const Sidebar = ({
   // Determine which sections to show based on login status
   const sections = isLoggedIn
     ? [generalSection, membersSection, workspaceSection]
-    : [generalSection,];
+    : [generalSection];
 
   return (
     <div className={`sidebar ${isSidebarVisible ? "" : "sidebar-hidden"}`}>
@@ -304,6 +338,11 @@ const Sidebar = ({
           isOpen={openSections[section.title]}
           toggleSection={toggleSection}
           currentPath={location.pathname}
+          setRoomId={setRoomId}
+          connectWebSocket={connectWebSocket}
+          generateRoomId={generateRoomId}
+          createNewWorkspace={createNewWorkspace}
+          setWorkspacesID={setWorkspacesID}
         />
       ))}
 
