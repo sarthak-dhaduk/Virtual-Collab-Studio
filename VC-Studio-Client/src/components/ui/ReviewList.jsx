@@ -1,30 +1,48 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
-const ReviewList = ({ reviews }) => {
-    const [reviewList, setReviewList] = useState(reviews);
+const ReviewList = ({ blogId, onReviewChange }) => {
+    const [reviews, setReviews] = useState([]);
 
-    const handleAddReview = () => {
-        const newReview = {
-            name: "New Reviewer",
-            rating: "⭐⭐⭐⭐",
-            initial: "N",
-        };
-        // setReviewList([...reviewList, newReview]);
+    const fetchReviews = async () => {
+        try {
+            const response = await fetch(`http://localhost:8080/api/review/getBlogReviews/${blogId}`);
+            if (response.ok) {
+                const data = await response.json();
+                setReviews(data);
+            }
+        } catch (error) {
+            console.error("Error fetching reviews:", error);
+        }
+    };
+
+    useEffect(() => {
+        fetchReviews();
+    }, [blogId]);
+
+    // Listen for review changes
+    useEffect(() => {
+        if (onReviewChange) {
+            onReviewChange(fetchReviews);
+        }
+    }, [onReviewChange]);
+
+    const getStarRating = (rating) => {
+        return "⭐".repeat(rating);
     };
 
     return (
         <ul className="list-unstyled">
-            {reviewList.map((review, index) => (
+            {reviews.map((review, index) => (
                 <li key={index} className="d-flex align-items-center mb-2 p-3">
                     <div
                         className="d-flex justify-content-center align-items-center bg-primary text-white rounded-circle me-2"
                         style={{ width: "48px", height: "48px" }}
                     >
-                        {review.initial}
+                        {review.username ? review.username[0].toUpperCase() : 'U'}
                     </div>
                     <div>
-                        <strong>{review.name}</strong>
-                        <p className="mb-0">{review.rating}</p>
+                        <strong>{review.username}</strong>
+                        <p className="mb-0">{getStarRating(review.RatingValue)}</p>
                     </div>
                 </li>
             ))}
@@ -37,7 +55,6 @@ const ReviewList = ({ reviews }) => {
                         backgroundColor: "#0D0F10",
                         borderColor: "#0D0F10",
                     }}
-                    onClick={handleAddReview}
                 >
                     <span
                         className="ms-2"

@@ -245,6 +245,10 @@ const Sidebar = ({
                 />
               </svg>
             ),
+            onClick: () => {
+              setRoomId(workspace._id); // Set the room ID
+              connectWebSocket(workspace._id); // Connect to WebSocket with this ID
+            }
           }))
         : [
             {
@@ -283,7 +287,7 @@ const Sidebar = ({
   // Determine which sections to show based on login status
   const sections = isLoggedIn
     ? [generalSection, membersSection, workspaceSection]
-    : [generalSection];
+    : [generalSection,];
 
   return (
     <div className={`sidebar ${isSidebarVisible ? "" : "sidebar-hidden"}`}>
