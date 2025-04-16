@@ -5,23 +5,11 @@ import Offer from "../../components/ui/Offer";
 import Choose from "../../components/ui/Choose";
 import Team from "../../components/ui/Team";
 import MainContent from "../../components/main-content";
-import Sidebar from '../../components/sidebar';
 import { isLoggedIn } from '../../sessionUtils';
 
-const AboutPage = ({ isLoggedIn: isLoggedInProp }) => {
-  const [isSidebarVisible, setIsSidebarVisible] = useState(true);
-  const [users, setUsers] = useState([]);
-
-  // Use the prop if provided, otherwise check session
-  const isLoggedInState = isLoggedInProp ?? isLoggedIn();
-
+const AboutPage = () => {
   return (
     <div className="d-flex">
-      <Sidebar
-        isSidebarVisible={isSidebarVisible}
-        isLoggedIn={isLoggedInState}
-        users={users}
-      />
       <MainContent>
         <section className="section">
           <div className="row align-items-top" />

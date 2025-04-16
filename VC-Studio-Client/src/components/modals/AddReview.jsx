@@ -1,74 +1,73 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { getUserSession } from "../../sessionUtils";
 
 const AddReview = ({ blogId, onReviewAdded }) => {
     const [selectedStars, setSelectedStars] = useState(0);
     const [existingReview, setExistingReview] = useState(null);
-    const [currentBlogId, setCurrentBlogId] = useState(null);
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [error, setError] = useState(null);
     const user = getUserSession();
 
-    // Reset state when blogId changes
-    useEffect(() => {
-        if (blogId !== currentBlogId) {
-            setSelectedStars(0);
+    const checkExistingReview = useCallback(async () => {
+        if (!user?.email || !blogId) return;
+
+        try {
+            setError(null);
+            const response = await fetch(`http://localhost:8080/api/review/getUserReview?blogId=${blogId}&email=${user.email}`);
+            if (!response.ok) {
+                throw new Error('Failed to fetch review');
+            }
+            const data = await response.json();
+            if (data.review) {
+                setExistingReview(data.review);
+                setSelectedStars(data.review.RatingValue);
+            } else {
+                setExistingReview(null);
+                setSelectedStars(0);
+            }
+        } catch (error) {
+            console.error("Error checking existing review:", error);
+            setError("Failed to check existing review. Please try again.");
             setExistingReview(null);
-            setCurrentBlogId(blogId);
+            setSelectedStars(0);
         }
-    }, [blogId, currentBlogId]);
+    }, [blogId, user?.email]);
 
     useEffect(() => {
-        const checkExistingReview = async () => {
-            if (!user?.email || !blogId) return;
+        let isMounted = true;
+        const modal = document.getElementById("addreviewmodal");
+        
+        if (!modal) return;
 
-            try {
-                const response = await fetch(`http://localhost:8080/api/review/getUserReview?blogId=${blogId}&email=${user.email}`);
-                const data = await response.json();
-                if (data) {
-                    setExistingReview(data);
-                    setSelectedStars(data.RatingValue);
-                } else {
-                    // Reset if no existing review
-                    setExistingReview(null);
-                    setSelectedStars(0);
-                }
-            } catch (error) {
-                console.error("Error checking existing review:", error);
+        const handleModalShow = () => {
+            if (isMounted) {
+                checkExistingReview();
+            }
+        };
+        
+        const handleModalHide = () => {
+            if (isMounted) {
+                setSelectedStars(0);
+                setExistingReview(null);
+                setError(null);
             }
         };
 
-        // Only check when modal is shown
-        const modal = document.getElementById("addreviewmodal");
-        if (modal) {
-            const handleModalShow = () => {
-                // Reset state before checking for existing review
-                setSelectedStars(0);
-                setExistingReview(null);
-                checkExistingReview();
-            };
-            
-            const handleModalHide = () => {
-                // Reset state when modal is hidden
-                setSelectedStars(0);
-                setExistingReview(null);
-                setCurrentBlogId(null);
-            };
+        modal.addEventListener('shown.bs.modal', handleModalShow);
+        modal.addEventListener('hidden.bs.modal', handleModalHide);
 
-            modal.addEventListener('shown.bs.modal', handleModalShow);
-            modal.addEventListener('hidden.bs.modal', handleModalHide);
-
-            return () => {
-                modal.removeEventListener('shown.bs.modal', handleModalShow);
-                modal.removeEventListener('hidden.bs.modal', handleModalHide);
-            };
-        }
-    }, [blogId, user?.email]);
+        return () => {
+            isMounted = false;
+            modal.removeEventListener('shown.bs.modal', handleModalShow);
+            modal.removeEventListener('hidden.bs.modal', handleModalHide);
+        };
+    }, [checkExistingReview]);
 
     const handleStarClick = (index) => {
         setSelectedStars(index + 1);
     };
 
     const closeModal = () => {
-        // Close the modal
         const modal = document.getElementById("addreviewmodal");
         const modalInstance = bootstrap.Modal.getInstance(modal);
         if (modalInstance) {
@@ -85,13 +84,27 @@ const AddReview = ({ blogId, onReviewAdded }) => {
         // Reset state
         setSelectedStars(0);
         setExistingReview(null);
-        setCurrentBlogId(null);
+        setError(null);
     };
 
     const handleSubmit = async () => {
-        if (!user || !blogId || selectedStars === 0) {
+        if (!user) {
+            setError("Please log in to submit a review.");
             return;
         }
+
+        if (!blogId) {
+            setError("Invalid blog post.");
+            return;
+        }
+
+        if (selectedStars === 0) {
+            setError("Please select a rating before submitting.");
+            return;
+        }
+
+        setIsSubmitting(true);
+        setError(null);
 
         try {
             const response = await fetch("http://localhost:8080/api/review/addReview", {
@@ -100,22 +113,31 @@ const AddReview = ({ blogId, onReviewAdded }) => {
                     "Content-Type": "application/json",
                 },
                 body: JSON.stringify({
-                    BlogID: blogId,
-                    Email: user.email,
+                    BlogId: blogId,
+                    UserEmail: user.email,
                     RatingValue: selectedStars
                 }),
             });
 
-            if (response.ok) {
-                if (onReviewAdded) {
-                    onReviewAdded();
-                }
-                closeModal();
-            } else {
-                console.error("Failed to submit review");
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw new Error(data.message || 'Failed to submit review');
             }
+
+            if (data.error) {
+                throw new Error(data.message);
+            }
+
+            if (onReviewAdded) {
+                await onReviewAdded();
+            }
+            closeModal();
         } catch (error) {
             console.error("Error submitting review:", error);
+            setError(error.message || "Failed to submit review. Please try again.");
+        } finally {
+            setIsSubmitting(false);
         }
     };
 
@@ -143,6 +165,11 @@ const AddReview = ({ blogId, onReviewAdded }) => {
                         ></button>
                     </div>
                     <div className="modal-body">
+                        {error && (
+                            <div className="alert alert-danger" role="alert">
+                                {error}
+                            </div>
+                        )}
                         <span style={{ color: "#9B9C9E", fontSize: "14px" }}>
                             {existingReview 
                                 ? "Update your rating to reflect your current opinion."
@@ -185,6 +212,7 @@ const AddReview = ({ blogId, onReviewAdded }) => {
                                     type="button"
                                     style={{ height: "3rem", width: "6rem", borderRadius: "12px" }}
                                     onClick={closeModal}
+                                    disabled={isSubmitting}
                                 >
                                     Cancel
                                 </button>
@@ -199,29 +227,32 @@ const AddReview = ({ blogId, onReviewAdded }) => {
                                         borderRadius: "12px",
                                     }}
                                     onClick={handleSubmit}
+                                    disabled={isSubmitting}
                                 >
-                                    {existingReview ? "Update" : "Submit"}
-                                    <svg
-                                        className="ms-2"
-                                        width="35"
-                                        height="33"
-                                        viewBox="0 0 35 33"
-                                        fill="none"
-                                        xmlns="http://www.w3.org/2000/svg"
-                                    >
-                                        <rect
-                                            x="0.5"
-                                            y="0.5"
-                                            width="34"
-                                            height="32"
-                                            rx="12"
-                                            fill="#1C1C1E"
-                                        />
-                                        <path
-                                            d="M17.3 7.5L20.3593 13.0227L26.3 14.3754L22.25 19.1413L22.8624 25.5L17.3 22.9227L11.7377 25.5L12.35 19.1413L8.30005 14.3754L14.2408 13.0227L17.3 7.5Z"
-                                            fill="#7DEA4D"
-                                        />
-                                    </svg>
+                                    {isSubmitting ? "Submitting..." : (existingReview ? "Update" : "Submit")}
+                                    {!isSubmitting && (
+                                        <svg
+                                            className="ms-2"
+                                            width="35"
+                                            height="33"
+                                            viewBox="0 0 35 33"
+                                            fill="none"
+                                            xmlns="http://www.w3.org/2000/svg"
+                                        >
+                                            <rect
+                                                x="0.5"
+                                                y="0.5"
+                                                width="34"
+                                                height="32"
+                                                rx="12"
+                                                fill="#1C1C1E"
+                                            />
+                                            <path
+                                                d="M17.3 7.5L20.3593 13.0227L26.3 14.3754L22.25 19.1413L22.8624 25.5L17.3 22.9227L11.7377 25.5L12.35 19.1413L8.30005 14.3754L14.2408 13.0227L17.3 7.5Z"
+                                                fill="#7DEA4D"
+                                            />
+                                        </svg>
+                                    )}
                                 </button>
                             </div>
                         </div>

@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
+import { isLoggedIn } from "../../sessionUtils";
 
 const SidebarSection = ({
   setRoomId,
@@ -12,11 +13,11 @@ const SidebarSection = ({
   isWorkspace,
   isOpen,
   toggleSection,
-  currentPath, // Receive the current path
-  signInButton, // Add this prop to handle the sign in button
+  currentPath,
 }) => {
   const [isCreating, setIsCreating] = useState(false);
   const [loadingWorkspaceId, setLoadingWorkspaceId] = useState(null);
+  const userLoggedIn = isLoggedIn();
 
   const handleCreateRoom = async () => {
     if (isCreating) return;
@@ -74,13 +75,8 @@ const SidebarSection = ({
               <button
                 className="bg-transparent border-0 text-start item-link"
                 onClick={() => {
-                  // Set loading state immediately
                   setLoadingWorkspaceId(link._id);
-
-                  // Execute the original click handler
                   if (link.onClick) link.onClick();
-
-                  // Clear loading state after 1.5 seconds
                   setTimeout(() => {
                     setLoadingWorkspaceId(null);
                   }, 2000);
@@ -97,8 +93,8 @@ const SidebarSection = ({
           </li>
         ))}
 
-        {/* Add Sign In button in the General section for non-logged in users */}
-        {signInButton && title === "General" && (
+        {/* Show Sign In button only if user is not logged in */}
+        {!userLoggedIn && title === "General" && (
           <li className="section-item">
             <Link
               to="/login"
