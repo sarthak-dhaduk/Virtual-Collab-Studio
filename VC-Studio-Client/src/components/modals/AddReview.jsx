@@ -144,7 +144,7 @@ const AddReview = ({ blogId, onReviewAdded }) => {
     return (
         <div
             className="modal fade"
-            id="addreviewmodal"
+            id={`addReviewModal${blogId}`}
             tabIndex="-1"
             aria-labelledby="addreviewmodalLabel"
             aria-hidden="true"
@@ -216,6 +216,7 @@ const AddReview = ({ blogId, onReviewAdded }) => {
                                 >
                                     Cancel
                                 </button>
+                                {blogId}
                                 <button
                                     type="button"
                                     className="btn btn-sm ms-3 text-center"

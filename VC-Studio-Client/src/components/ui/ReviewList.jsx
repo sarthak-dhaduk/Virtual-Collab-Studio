@@ -100,7 +100,7 @@ const ReviewList = ({ blogId, onReviewChange }) => {
                     <button
                         className="btn text-light"
                         data-bs-toggle="modal"
-                        data-bs-target="#addreviewmodal"
+                        data-bs-target={`#addReviewModal${blogId}`}
                         style={{
                             backgroundColor: "#0D0F10",
                             borderColor: "#0D0F10",

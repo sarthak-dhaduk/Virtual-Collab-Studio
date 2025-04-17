@@ -1,6 +1,7 @@
 import mongoose from 'mongoose';
 
 const reviewSchema = new mongoose.Schema({
+    
     BlogId: {
         type: String,
         required: true,
@@ -26,9 +27,6 @@ const reviewSchema = new mongoose.Schema({
 }, {
     timestamps: true
 });
-
-// Create a compound index to ensure a user can only review a blog once
-reviewSchema.index({ BlogId: 1, UserEmail: 1 }, { unique: true });
 
 const Review = mongoose.model('Review', reviewSchema);
 

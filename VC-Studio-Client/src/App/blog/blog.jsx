@@ -5,7 +5,7 @@ import MainContent from "../../components/main-content";
 import ReviewList from "../../components/ui/ReviewList";
 import AddReview from "../../components/modals/AddReview";
 
-const BlogPage = () => {  
+const BlogPage = ({ isLoggedIn }) => {
   const [isDescriptionOpen, setIsDescriptionOpen] = useState(true);
   const [isReviewOpen, setIsReviewOpen] = useState(true);
   const [copyStatuses, setCopyStatuses] = useState({});
@@ -19,17 +19,19 @@ const BlogPage = () => {
     try {
       setLoading(true);
       setError(null);
-      
+
       const searchParams = new URLSearchParams(location.search);
-      const searchQuery = searchParams.get('search');
-      
-      const url = searchQuery 
-        ? `http://localhost:8080/api/blog/getAllBlogs?search=${encodeURIComponent(searchQuery)}`
+      const searchQuery = searchParams.get("search");
+
+      const url = searchQuery
+        ? `http://localhost:8080/api/blog/getAllBlogs?search=${encodeURIComponent(
+            searchQuery
+          )}`
         : "http://localhost:8080/api/blog/getAllBlogs";
 
       const response = await fetch(url);
       if (!response.ok) {
-        throw new Error('Failed to fetch blogs');
+        throw new Error("Failed to fetch blogs");
       }
       const data = await response.json();
       setBlogs(data);
@@ -47,69 +49,76 @@ const BlogPage = () => {
 
   const handleSearch = (query) => {
     if (!query.trim()) {
-      window.location.href = '/blog';
+      window.location.href = "/blog";
       return;
     }
     window.location.href = `/blog?search=${encodeURIComponent(query)}`;
   };
 
   const handleKeyPress = (e) => {
-    if (e.key === 'Enter') {
+    if (e.key === "Enter") {
       handleSearch(e.target.value);
     }
   };
 
   const handleCopyCode = (codeSnippet, blogId) => {
     if (codeSnippet) {
-      navigator.clipboard.writeText(codeSnippet)
+      navigator.clipboard
+        .writeText(codeSnippet)
         .then(() => {
-          setCopyStatuses(prev => ({
+          setCopyStatuses((prev) => ({
             ...prev,
-            [blogId]: "Copied!"
+            [blogId]: "Copied!",
           }));
           setTimeout(() => {
-            setCopyStatuses(prev => ({
+            setCopyStatuses((prev) => ({
               ...prev,
-              [blogId]: "Copy Code"
+              [blogId]: "Copy Code",
             }));
           }, 2000);
         })
-        .catch(err => {
-          console.error('Failed to copy text: ', err);
+        .catch((err) => {
+          console.error("Failed to copy text: ", err);
         });
     }
   };
 
   const handleReviewChange = useCallback((blogId, refreshFunction) => {
-    setReviewRefreshFunctions(prev => {
+    setReviewRefreshFunctions((prev) => {
       // Only update if the function is different
       if (prev[blogId] === refreshFunction) {
         return prev;
       }
       return {
         ...prev,
-        [blogId]: refreshFunction
+        [blogId]: refreshFunction,
       };
     });
   }, []);
 
-  const handleReviewAdded = useCallback(async (blogId) => {
-    try {
-      // Refresh the specific blog's reviews
-      if (reviewRefreshFunctions[blogId]) {
-        await reviewRefreshFunctions[blogId]();
+  const handleReviewAdded = useCallback(
+    async (blogId) => {
+      try {
+        // Refresh the specific blog's reviews
+        if (reviewRefreshFunctions[blogId]) {
+          await reviewRefreshFunctions[blogId]();
+        }
+        // Refresh the blog list to update average ratings
+        await fetchData();
+      } catch (error) {
+        console.error("Error refreshing reviews:", error);
       }
-      // Refresh the blog list to update average ratings
-      await fetchData();
-    } catch (error) {
-      console.error("Error refreshing reviews:", error);
-    }
-  }, [reviewRefreshFunctions, fetchData]);
+    },
+    [reviewRefreshFunctions, fetchData]
+  );
 
   if (loading) {
     return (
       <MainContent>
-        <div className="d-flex justify-content-center align-items-center" style={{ height: "400px" }}>
+        <div
+          className="d-flex justify-content-center align-items-center"
+          style={{ height: "400px" }}
+        >
           <div className="spinner-border text-primary" role="status">
             <span className="visually-hidden">Loading...</span>
           </div>
@@ -119,11 +128,11 @@ const BlogPage = () => {
   }
 
   return (
-    <MainContent>
+    <MainContent isLoggedIn={isLoggedIn}>
       {/* Hidden input to sync with SearchBar */}
       <input
         type="hidden"
-        value={location.search.split('=')[1] || ''}
+        value={location.search.split("=")[1] || ""}
         onChange={(e) => handleSearch(e.target.value)}
         onKeyPress={handleKeyPress}
       />
@@ -131,8 +140,8 @@ const BlogPage = () => {
       {error && (
         <div className="alert alert-danger mt-3" role="alert">
           {error}
-          <button 
-            className="btn btn-sm btn-primary ms-2" 
+          <button
+            className="btn btn-sm btn-primary ms-2"
             onClick={() => fetchData()}
           >
             Retry
@@ -141,9 +150,9 @@ const BlogPage = () => {
       )}
       {!loading && blogs.length === 0 && (
         <div className="alert alert-info mt-3" role="alert">
-          {location.search ? 
-            "No blog posts found matching your search criteria." : 
-            "No blog posts available at the moment."}
+          {location.search
+            ? "No blog posts found matching your search criteria."
+            : "No blog posts available at the moment."}
         </div>
       )}
       <div className="row align-items-top">
@@ -160,15 +169,17 @@ const BlogPage = () => {
                 <div className="d-flex align-items-center fw-bolder p-3">
                   <div className="d-flex align-items-center">
                     <div className="profile-avatar me-2">
-                      {blog.username ? blog.username[0].toUpperCase() : 'U'}
+                      {blog.username ? blog.username[0].toUpperCase() : "U"}
                     </div>
                     <h5 className="text-white mb-0">
-                      {blog.username || 'Unknown User'}
+                      {blog.username || "Unknown User"}
                     </h5>
                   </div>
                 </div>
                 <div className="d-flex align-items-center">
-                  <span className="text-white me-2">{blog.AverageRating?.toFixed(1) || '0.0'}</span>
+                  <span className="text-white me-2">
+                    {blog.AverageRating?.toFixed(1) || "0.0"}
+                  </span>
                   <div className="ms-3">
                     <svg
                       width="18"
@@ -208,7 +219,9 @@ const BlogPage = () => {
                         <button
                           className="btn btn-sm"
                           style={{ color: "#686B6E" }}
-                          onClick={() => handleCopyCode(blog.CodeSnippet, blog._id)}
+                          onClick={() =>
+                            handleCopyCode(blog.CodeSnippet, blog._id)
+                          }
                         >
                           <svg
                             width="18"
@@ -250,7 +263,10 @@ const BlogPage = () => {
 
                   <div className="col-12 col-md-6 mt-3">
                     <div className="accordion-container">
-                      <h5 className="fw-bold text-white p-4" style={{ fontSize: "20px" }}>
+                      <h5
+                        className="fw-bold text-white p-4"
+                        style={{ fontSize: "20px" }}
+                      >
                         {blog.Title}
                       </h5>
                       {/* Description Accordion */}
@@ -324,13 +340,17 @@ const BlogPage = () => {
                             transition={{ duration: 0.3, ease: "easeInOut" }}
                           >
                             <div className="accordion-body">
-                              <ReviewList 
-                                blogId={blog._id} 
-                                onReviewChange={(refreshFunction) => handleReviewChange(blog._id, refreshFunction)}
+                              <ReviewList
+                                blogId={blog._id}
+                                onReviewChange={(refreshFunction) =>
+                                  handleReviewChange(blog._id, refreshFunction)
+                                }
                               />
-                              <AddReview 
-                                blogId={blog._id} 
-                                onReviewAdded={() => handleReviewAdded(blog._id)} 
+                              <AddReview
+                                blogId={blog._id}
+                                onReviewAdded={() =>
+                                  handleReviewAdded(blog._id)
+                                }
                               />
                             </div>
                           </motion.div>
