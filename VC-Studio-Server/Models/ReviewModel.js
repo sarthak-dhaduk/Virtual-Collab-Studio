@@ -1,27 +1,34 @@
 import mongoose from 'mongoose';
 
 const reviewSchema = new mongoose.Schema({
-    BlogID: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Blog',
-        required: true
-    },
-    Email: {
+    BlogId: {
         type: String,
-        required: true
+        required: true,
+    },
+    UserEmail: {
+        type: String,
+        required: true,
     },
     RatingValue: {
         type: Number,
         required: true,
         min: 1,
-        max: 5
-    }
+        max: 5,
+    },
+    username: {
+        type: String,
+        required: true,
+    },
+    createdAt: {
+        type: Date,
+        default: Date.now,
+    },
 }, {
     timestamps: true
 });
 
-// Ensure one review per user per blog
-reviewSchema.index({ BlogID: 1, Email: 1 }, { unique: true });
+// Create a compound index to ensure a user can only review a blog once
+reviewSchema.index({ BlogId: 1, UserEmail: 1 }, { unique: true });
 
 const Review = mongoose.model('Review', reviewSchema);
 

@@ -1,6 +1,6 @@
 import express from "express";
 import Authentication from "../Models/AuthenticationModel.js";
-import bcrypt from "bcryptjs";
+import bcrypt from "bcryptjs"
 
 const router = express.Router();
 
@@ -124,6 +124,100 @@ router.post("/login", async (req, res) => {
       .status(500)
       .json({ message: "Internal Server Error", error: error.message });
   }
+});
+
+// Update user details
+router.put("/update-profile", async (req, res) => {
+    try {
+        const { userId, username, email, contactNumber, password } = req.body;
+
+        // Validate required fields
+        if (!userId) {
+            return res.status(400).json({ error: true, message: "User ID is required" });
+        }
+
+        // Find user by ID
+        const user = await Authentication.findOne({ _id: userId });
+        if (!user) {
+            return res.status(404).json({ error: true, message: "User not found" });
+        }
+
+        // Validate email if provided
+        if (email) {
+            if (!emailRegex.test(email)) {
+                return res.status(400).json({ error: true, message: "Invalid email format" });
+            }
+            // Check if email is already taken by another user
+            const existingUser = await Authentication.findOne({ email, _id: { $ne: userId } });
+            if (existingUser) {
+                return res.status(400).json({ error: true, message: "Email is already registered" });
+            }
+            user.email = email;
+        }
+
+        // Validate contact number if provided
+        if (contactNumber) {
+            if (!contactNumberRegex.test(contactNumber)) {
+                return res.status(400).json({ error: true, message: "Contact number must be a 10-digit number" });
+            }
+            user.contactNumber = contactNumber;
+        }
+
+        // Update username if provided
+        if (username) {
+            user.username = username;
+        }
+
+        // Update password if provided
+        if (password && password.trim() !== "") {
+            if (!passwordRegex.test(password)) {
+                return res.status(400).json({ 
+                    error: true, 
+                    message: "Password must be at least 2 characters long and contain both letters and numbers" 
+                });
+            }
+            const hashedPassword = await bcrypt.hash(password, 10);
+            user.password = hashedPassword;
+        }
+
+        // Save updated user
+        await user.save();
+
+        // Return updated user data (excluding password)
+        const updatedUser = {
+            _id: user._id,
+            username: user.username,
+            email: user.email,
+            contactNumber: user.contactNumber
+        };
+
+        res.json({ error: false, message: "Profile updated successfully", user: updatedUser });
+    } catch (error) {
+        console.error("Error updating profile:", error);
+        res.status(500).json({ error: true, message: "Failed to update profile" });
+    }
+});
+
+// Get user's password
+router.get("/get-password/:userId", async (req, res) => {
+    try {
+        const { userId } = req.params;
+
+        // Find user by ID
+        const user = await Authentication.findOne({ _id: userId });
+        if (!user) {
+            return res.status(404).json({ error: true, message: "User not found" });
+        }
+
+        // Return the hashed password
+        res.json({ 
+            error: false, 
+            password: user.password 
+        });
+    } catch (error) {
+        console.error("Error fetching password:", error);
+        res.status(500).json({ error: true, message: "Failed to fetch password" });
+    }
 });
 
 export default router;

@@ -1,5 +1,6 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { motion } from "framer-motion";
+import { useLocation } from "react-router-dom";
 import MainContent from "../../components/main-content";
 import ReviewList from "../../components/ui/ReviewList";
 import AddReview from "../../components/modals/AddReview";
@@ -10,23 +11,23 @@ const BlogPage = () => {
   const [copyStatuses, setCopyStatuses] = useState({});
   const [blogs, setBlogs] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [reviewRefreshFunctions, setReviewRefreshFunctions] = useState({});
+  const location = useLocation();
 
-  const reviews = [
-    { name: "Sarthak Dhaduk", rating: "⭐⭐⭐⭐⭐", initial: "S" },
-    { name: "Yash Lalani", rating: "⭐⭐⭐⭐", initial: "Y" },
-    { name: "Jigar Kalariya", rating: "⭐⭐⭐⭐⭐", initial: "J" },
-  ];
-
-  // Fetch blogs when component mounts
-  useEffect(() => {
-    fetchBlogs();
-  }, []);
-
-  const fetchBlogs = async () => {
+  const fetchData = useCallback(async () => {
     try {
       setLoading(true);
-      const response = await fetch("http://localhost:8080/api/blog/getAllBlogs");
+      setError(null);
+      
+      const searchParams = new URLSearchParams(location.search);
+      const searchQuery = searchParams.get('search');
+      
+      const url = searchQuery 
+        ? `http://localhost:8080/api/blog/getAllBlogs?search=${encodeURIComponent(searchQuery)}`
+        : "http://localhost:8080/api/blog/getAllBlogs";
+
+      const response = await fetch(url);
       if (!response.ok) {
         throw new Error('Failed to fetch blogs');
       }
@@ -34,8 +35,27 @@ const BlogPage = () => {
       setBlogs(data);
     } catch (error) {
       console.error("Error fetching blogs:", error);
+      setError("Failed to load blogs. Please try again later.");
     } finally {
       setLoading(false);
+    }
+  }, [location.search]);
+
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
+
+  const handleSearch = (query) => {
+    if (!query.trim()) {
+      window.location.href = '/blog';
+      return;
+    }
+    window.location.href = `/blog?search=${encodeURIComponent(query)}`;
+  };
+
+  const handleKeyPress = (e) => {
+    if (e.key === 'Enter') {
+      handleSearch(e.target.value);
     }
   };
 
@@ -60,21 +80,31 @@ const BlogPage = () => {
     }
   };
 
-  const handleReviewAdded = (blogId) => {
-    // Refresh blogs to update ratings
-    fetchBlogs();
-    // Refresh reviews for the specific blog
-    if (reviewRefreshFunctions[blogId]) {
-      reviewRefreshFunctions[blogId]();
-    }
-  };
+  const handleReviewChange = useCallback((blogId, refreshFunction) => {
+    setReviewRefreshFunctions(prev => {
+      // Only update if the function is different
+      if (prev[blogId] === refreshFunction) {
+        return prev;
+      }
+      return {
+        ...prev,
+        [blogId]: refreshFunction
+      };
+    });
+  }, []);
 
-  const handleReviewChange = (blogId, refreshFunction) => {
-    setReviewRefreshFunctions(prev => ({
-      ...prev,
-      [blogId]: refreshFunction
-    }));
-  };
+  const handleReviewAdded = useCallback(async (blogId) => {
+    try {
+      // Refresh the specific blog's reviews
+      if (reviewRefreshFunctions[blogId]) {
+        await reviewRefreshFunctions[blogId]();
+      }
+      // Refresh the blog list to update average ratings
+      await fetchData();
+    } catch (error) {
+      console.error("Error refreshing reviews:", error);
+    }
+  }, [reviewRefreshFunctions, fetchData]);
 
   if (loading) {
     return (
@@ -90,6 +120,32 @@ const BlogPage = () => {
 
   return (
     <MainContent>
+      {/* Hidden input to sync with SearchBar */}
+      <input
+        type="hidden"
+        value={location.search.split('=')[1] || ''}
+        onChange={(e) => handleSearch(e.target.value)}
+        onKeyPress={handleKeyPress}
+      />
+
+      {error && (
+        <div className="alert alert-danger mt-3" role="alert">
+          {error}
+          <button 
+            className="btn btn-sm btn-primary ms-2" 
+            onClick={() => fetchData()}
+          >
+            Retry
+          </button>
+        </div>
+      )}
+      {!loading && blogs.length === 0 && (
+        <div className="alert alert-info mt-3" role="alert">
+          {location.search ? 
+            "No blog posts found matching your search criteria." : 
+            "No blog posts available at the moment."}
+        </div>
+      )}
       <div className="row align-items-top">
         {blogs.map((blog, index) => (
           <div className="col-12 col-lg-12 mb-4" key={index}>
@@ -112,7 +168,7 @@ const BlogPage = () => {
                   </div>
                 </div>
                 <div className="d-flex align-items-center">
-                  <span className="text-white me-2">4.5</span>
+                  <span className="text-white me-2">{blog.AverageRating?.toFixed(1) || '0.0'}</span>
                   <div className="ms-3">
                     <svg
                       width="18"

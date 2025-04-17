@@ -1,6 +1,7 @@
 import express from "express";
 import Blog from "../Models/BlogModel.js";
 import Authentication from "../Models/AuthenticationModel.js";
+import Review from "../Models/ReviewModel.js";
 
 const router = express.Router();
 
@@ -41,16 +42,50 @@ router.post("/createBlog", async (req, res) => {
 // Get all blogs with username
 router.get("/getAllBlogs", async (req, res) => {
     try {
-        const blogs = await Blog.find().sort({ createdAt: -1 });
+        const { search } = req.query;
+        let query = {};
+
+        if (search) {
+            if (search.startsWith('@')) {
+                // Search by username
+                const username = search.substring(1).toLowerCase();
+                const users = await Authentication.find({ 
+                    username: { $regex: username, $options: 'i' } 
+                });
+                const userEmails = users.map(user => user.email);
+                query = { Email: { $in: userEmails } };
+            } else {
+                // Search in title, description, and programming language
+                query = {
+                    $or: [
+                        { Title: { $regex: search, $options: 'i' } },
+                        { Description: { $regex: search, $options: 'i' } },
+                        { ProgrammingLanguage: { $regex: search, $options: 'i' } }
+                    ]
+                };
+            }
+        }
+
+        const blogs = await Blog.find(query).sort({ createdAt: -1 });
         
-        // Get usernames for all blogs
+        // Get usernames and ratings for all blogs
         const blogsWithUsernames = await Promise.all(blogs.map(async (blog) => {
             const user = await Authentication.findOne({ email: blog.Email });
+            const reviews = await Review.find({ BlogID: blog._id });
+            const averageRating = reviews.length > 0 
+                ? reviews.reduce((acc, review) => acc + review.RatingValue, 0) / reviews.length 
+                : 0;
             return {
                 ...blog.toObject(),
-                username: user ? user.username : 'Unknown User'
+                username: user ? user.username : 'Unknown User',
+                AverageRating: averageRating
             };
         }));
+
+        // Sort by rating if search starts with @
+        if (search?.startsWith('@')) {
+            blogsWithUsernames.sort((a, b) => b.AverageRating - a.AverageRating);
+        }
 
         res.status(200).json(blogsWithUsernames);
     } catch (error) {
