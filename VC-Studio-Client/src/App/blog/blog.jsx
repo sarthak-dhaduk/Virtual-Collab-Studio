@@ -25,8 +25,8 @@ const BlogPage = ({ isLoggedIn }) => {
 
       const url = searchQuery
         ? `http://localhost:8080/api/blog/getAllBlogs?search=${encodeURIComponent(
-            searchQuery
-          )}`
+          searchQuery
+        )}`
         : "http://localhost:8080/api/blog/getAllBlogs";
 
       const response = await fetch(url);
@@ -34,7 +34,22 @@ const BlogPage = ({ isLoggedIn }) => {
         throw new Error("Failed to fetch blogs");
       }
       const data = await response.json();
-      setBlogs(data);
+
+      // Fetch average ratings for each blog
+      const blogsWithRatings = await Promise.all(
+        data.map(async (blog) => {
+          const ratingResponse = await fetch(
+            `http://localhost:8080/api/review/getAverageRating/${blog._id}`
+          );
+          const ratingData = await ratingResponse.json();
+          return {
+            ...blog,
+            AverageRating: ratingData.averageRating || 0,
+          };
+        })
+      );
+
+      setBlogs(blogsWithRatings);
     } catch (error) {
       console.error("Error fetching blogs:", error);
       setError("Failed to load blogs. Please try again later.");
@@ -149,8 +164,8 @@ const BlogPage = ({ isLoggedIn }) => {
         </div>
       )}
       {!loading && blogs.length === 0 && (
-        <div className="footer text-center mt-3" style={{ color: '#9B9C9E' }}> 
-            {location.search
+        <div className="footer text-center mt-3" style={{ color: '#9B9C9E' }}>
+          {location.search
             ? "No blog posts found matching your search criteria."
             : "No blog posts available at the moment."}
         </div>
@@ -286,9 +301,8 @@ const BlogPage = ({ isLoggedIn }) => {
                               aria-controls="collapseDescription"
                             >
                               <i
-                                className={`bi bi-chevron-down accordion-icon ${
-                                  isDescriptionOpen ? "rotate-180" : ""
-                                }`}
+                                className={`bi bi-chevron-down accordion-icon ${isDescriptionOpen ? "rotate-180" : ""
+                                  }`}
                               ></i>
                               <span className="ms-2">Description</span>
                             </button>
@@ -322,9 +336,8 @@ const BlogPage = ({ isLoggedIn }) => {
                               aria-controls="collapseReview"
                             >
                               <i
-                                className={`bi bi-chevron-down accordion-icon ${
-                                  isReviewOpen ? "rotate-180" : ""
-                                }`}
+                                className={`bi bi-chevron-down accordion-icon ${isReviewOpen ? "rotate-180" : ""
+                                  }`}
                               ></i>
                               <span className="ms-2">Reviews</span>
                             </button>

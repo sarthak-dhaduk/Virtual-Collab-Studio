@@ -154,15 +154,7 @@ router.put("/update-profile", async (req, res) => {
             }
             user.email = email;
         }
-
-        // Validate contact number if provided
-        if (contactNumber) {
-            if (!contactNumberRegex.test(contactNumber)) {
-                return res.status(400).json({ error: true, message: "Contact number must be a 10-digit number" });
-            }
-            user.contactNumber = contactNumber;
-        }
-
+        
         // Update username if provided
         if (username) {
             user.username = username;
