@@ -19,9 +19,9 @@ const ContactDropdown = ({ label, options, selected, onSelect, className }) => {
           {label}
         </label>
       )}
-      <div className="dropdown">
+      <div className="dropdown contact-drop">
         <button
-          className="btn dropdown-menu-contact d-flex align-items-center text-light dropdown-toggle custom-btn"
+          className="btn dropdown-menu-contact d-flex align-items-center text-light custom-btn" style={{padding:"11px"}}
           type="button"
           onClick={toggleDropdown}
         >

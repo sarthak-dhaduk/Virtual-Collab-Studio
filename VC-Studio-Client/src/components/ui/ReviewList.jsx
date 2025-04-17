@@ -72,7 +72,7 @@ const ReviewList = ({ blogId, onReviewChange }) => {
                             <div className="flex-grow-1">
                                 <div className="d-flex justify-content-between align-items-center">
                                     <strong>{review.username || 'Unknown User'}</strong>
-                                    <small className="text-muted">
+                                    <small className="fw-bolder">
                                         {new Date(review.createdAt).toLocaleDateString()}
                                     </small>
                                 </div>

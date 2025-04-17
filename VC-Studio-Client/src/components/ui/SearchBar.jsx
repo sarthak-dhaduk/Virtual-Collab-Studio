@@ -15,14 +15,20 @@ const SearchBar = ({ isSidebarVisible, toggleSidebar }) => {
         setSearchQuery(query);
     }, [location.search]);
 
-    const handleSearch = () => {
+        const handleSearch = () => {
         if (!searchQuery.trim()) {
             // If search is empty, navigate to blog page without search parameter
             window.location.href = '/blog';
             return;
         }
-        // Navigate to blog page with search query and reload
-        window.location.href = `/blog?search=${encodeURIComponent(searchQuery)}`;
+    
+        if (searchQuery.startsWith('@')) {
+            // If search starts with '@', navigate to blog page with username search query
+            window.location.href = `/blog?search=${encodeURIComponent(searchQuery)}`;
+        } else {
+            // Navigate to blog page with general search query
+            window.location.href = `/blog?search=${encodeURIComponent(searchQuery)}`;
+        }
     };
 
     const handleKeyPress = (e) => {

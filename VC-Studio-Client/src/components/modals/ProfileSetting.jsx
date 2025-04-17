@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import Input from "../ui/input";
-import { getUserSession } from "../../sessionUtils";
+import { getUserSession, updateUserSession } from "../../sessionUtils";
 
 const ProfileSetting = () => {
     const [formData, setFormData] = useState({
@@ -58,13 +58,13 @@ const ProfileSetting = () => {
         e.preventDefault();
         setLoading(true);
         setMessage({ type: "", text: "" });
-
+    
         try {
             const user = getUserSession();
             if (!user) {
                 throw new Error("User not logged in");
             }
-
+    
             // Validate form data
             if (!formData.username.trim()) {
                 throw new Error("Username is required");
@@ -72,19 +72,16 @@ const ProfileSetting = () => {
             if (!formData.email.trim()) {
                 throw new Error("Email is required");
             }
-            if (!formData.contactNumber.trim()) {
-                throw new Error("Contact number is required");
-            }
-
+    
             // Prepare the request payload
             const payload = {
                 userId: user._id,
                 username: formData.username.trim(),
                 email: formData.email.trim(),
-                contactNumber: formData.contactNumber.trim(),
+                contactNumber: formData.contactNumber,
                 password: formData.password.trim(),
             };
-
+    
             const response = await fetch("http://localhost:8080/api/auth/update-profile", {
                 method: "PUT",
                 headers: {
@@ -92,21 +89,21 @@ const ProfileSetting = () => {
                 },
                 body: JSON.stringify(payload),
             });
-
+    
             const data = await response.json();
-
+    
             if (!response.ok) {
                 throw new Error(data.message || "Failed to update profile");
             }
-
+    
             // Update session with new user data
-            sessionStorage.setItem("user", JSON.stringify(data.user));
-            
+            updateUserSession(data.user);
+    
             setMessage({
                 type: "success",
                 text: "Profile updated successfully!",
             });
-
+    
             // Close the modal and reload the page after a short delay
             setTimeout(() => {
                 const modal = document.getElementById('profileSettingsModal');
@@ -114,11 +111,12 @@ const ProfileSetting = () => {
                 modalInstance.hide();
                 window.location.reload();
             }, 1500);
-
+    
         } catch (error) {
             console.error("Update profile error:", error);
             setMessage({
                 type: "error",
+                text: error.message || "Failed to update profile",
             });
         } finally {
             setLoading(false);
