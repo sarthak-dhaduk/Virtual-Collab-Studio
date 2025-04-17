@@ -30,7 +30,8 @@ const ProfileSetting = () => {
                         username: user.username || "",
                         email: user.email || "",
                         contactNumber: user.contactNumber || "",
-                        password: data.password || "", // Set the fetched password
+                        // password: data.password || "", // Set the fetched password
+                        password: "", // Set the fetched password
                     });
                 } catch (error) {
                     console.error("Error fetching password:", error);
@@ -118,7 +119,6 @@ const ProfileSetting = () => {
             console.error("Update profile error:", error);
             setMessage({
                 type: "error",
-                text: error.message || "Failed to update profile. Please try again later.",
             });
         } finally {
             setLoading(false);
@@ -152,11 +152,6 @@ const ProfileSetting = () => {
                             Edit your username, email, contact number, and password as needed, then
                             click 'Save Changes' to keep your profile up to date.
                         </p>
-                        {message.text && (
-                            <div className={`alert alert-${message.type === "success" ? "success" : "danger"}`}>
-                                {message.text}
-                            </div>
-                        )}
                         <form className="p-3" onSubmit={handleSubmit}>
                             <div className="row g-3">
                                 <div className="col-md-6">
