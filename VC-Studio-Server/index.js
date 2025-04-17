@@ -10,6 +10,8 @@ import http from "http";
 import setupWebSocketServer from "./Controllers/SocketController.js";
 import BlogController from "./Controllers/BlogController.js";
 import ReviewController from "./Controllers/ReviewController.js";
+import contact from "./Controllers/Contact.js";
+import forgotpass from "./Controllers/ForgotPassword.js";
 
 dotenv.config(); // Load environment variables
 
@@ -65,9 +67,11 @@ mongoose
 
 // API Routes
 app.use("/api/auth", AuthController);
+app.use("/api/contact",contact);
 app.use("/api/workspace", WorkspaceController);
 app.use("/api/blog", BlogController);
 app.use("/api/review", ReviewController);
+app.use("/api/pass", forgotpass);
 
 // Error handling middleware
 app.use((err, req, res, next) => {

@@ -216,7 +216,6 @@ const AddReview = ({ blogId, onReviewAdded }) => {
                                 >
                                     Cancel
                                 </button>
-                                {blogId}
                                 <button
                                     type="button"
                                     className="btn btn-sm ms-3 text-center"
