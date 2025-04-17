@@ -152,4 +152,28 @@ router.get("/getUserReview", async (req, res) => {
     }
 });
 
+// Get average rating for a blog
+router.get("/getAverageRating/:blogId", async (req, res) => {
+    try {
+        const { blogId } = req.params;
+
+        // Fetch all reviews for the blog
+        const reviews = await Review.find({ BlogId: blogId });
+
+        // Calculate the average rating
+        const averageRating = reviews.length > 0
+            ? reviews.reduce((sum, review) => sum + review.RatingValue, 0) / reviews.length
+            : 0;
+
+        res.status(200).json({ averageRating });
+    } catch (error) {
+        console.error("Error occurred while calculating average rating:", error);
+        res.status(500).json({
+            error: true,
+            message: "Failed to calculate average rating",
+            details: error.message
+        });
+    }
+});
+
 export default router;
