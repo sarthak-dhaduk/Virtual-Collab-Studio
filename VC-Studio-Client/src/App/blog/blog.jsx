@@ -26,8 +26,8 @@ const BlogPage = ({ isLoggedIn }) => {
   
       const url = searchQuery
         ? `http://localhost:8080/api/blog/getAllBlogs?search=${encodeURIComponent(
-            searchQuery
-          )}`
+          searchQuery
+        )}`
         : "http://localhost:8080/api/blog/getAllBlogs";
   
       const response = await fetch(url);
@@ -75,6 +75,22 @@ const BlogPage = ({ isLoggedIn }) => {
         return acc;
       }, {});
       setAccordionStates(initialAccordionStates);
+
+      // Fetch average ratings for each blog
+      const blogsWithRatings = await Promise.all(
+        data.map(async (blog) => {
+          const ratingResponse = await fetch(
+            `http://localhost:8080/api/review/getAverageRating/${blog._id}`
+          );
+          const ratingData = await ratingResponse.json();
+          return {
+            ...blog,
+            AverageRating: ratingData.averageRating || 0,
+          };
+        })
+      );
+
+      setBlogs(blogsWithRatings);
     } catch (error) {
       console.error("Error fetching blogs:", error);
       setError("Failed to load blogs. Please try again later.");
