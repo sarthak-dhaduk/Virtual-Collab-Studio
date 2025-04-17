@@ -318,7 +318,6 @@ const Sidebar = ({
     isWorkspace: true,
   };
 
-  // Determine which sections to show based on login status
   const sections = isLoggedIn
     ? [generalSection, membersSection, workspaceSection]
     : [generalSection];

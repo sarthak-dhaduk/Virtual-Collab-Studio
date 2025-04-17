@@ -31,9 +31,9 @@ const App = () => {
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/reset-password" element={<ResetPass />} />
         <Route path="/dashboard" element={<MainContent isLoggedIn={isLoggedIn} />} />
-        <Route path="/blog" element={<BlogPage />} />
-        <Route path="/about" element={<AboutPage />} />
-        <Route path="/contact" element={<ContactUs />} />
+        <Route path="/blog" element={<BlogPage isLoggedIn={isLoggedIn} />} />
+        <Route path="/about" element={<AboutPage isLoggedIn={isLoggedIn} />} />
+        <Route path="/contact" element={<ContactUs isLoggedIn={isLoggedIn} />} />
       </Routes>
     </Router>
   );

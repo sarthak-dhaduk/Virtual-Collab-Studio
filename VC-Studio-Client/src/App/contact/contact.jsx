@@ -5,7 +5,7 @@ import Button from "../../components/ui/button";
 import ContactDropdown from "../../components/ui/ContactDropdown";
 import MainContent from "../../components/main-content";
 
-const ContactUs = () => {
+const ContactUs = ({ isLoggedIn }) => {
   const [form, setForm] = useState({
     fullName: "",
     email: "",
@@ -19,7 +19,7 @@ const ContactUs = () => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
   return (
-    <MainContent>
+    <MainContent isLoggedIn={isLoggedIn}>
       <section className="section">
         <div className="row align-items-top">
           <div className="col-12">
