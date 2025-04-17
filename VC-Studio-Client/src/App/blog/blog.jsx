@@ -149,8 +149,8 @@ const BlogPage = ({ isLoggedIn }) => {
         </div>
       )}
       {!loading && blogs.length === 0 && (
-        <div className="alert alert-info mt-3" role="alert">
-          {location.search
+        <div className="footer text-center mt-3" style={{ color: '#9B9C9E' }}> 
+            {location.search
             ? "No blog posts found matching your search criteria."
             : "No blog posts available at the moment."}
         </div>
