@@ -7,9 +7,19 @@ import Button from '../../components/ui/button';
 const ForgotPassword = () => {
     const [email, setEmail] = useState('');
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async(e) => {
         e.preventDefault();
-        console.log('Forgot Password:', email);
+        try {
+            const res = await fetch('http://localhost:8080/api/pass/forgot-password', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email }),
+            });
+            const data = await res.json();
+            alert(data.message);
+        } catch (error) {
+            alert('Something went wrong');
+        }
     };
 
     return (

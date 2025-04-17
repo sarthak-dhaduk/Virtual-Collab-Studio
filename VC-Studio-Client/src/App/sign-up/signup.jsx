@@ -56,7 +56,7 @@ const SignUp = () => {
       setSuccessMessage(response.data.message);
       setTimeout(() => {
         // Redirect to login page after 2 seconds
-        navigate("/");
+        navigate("/login");
       }, 2000);
     } catch (error) {
       // Handle API error response

@@ -1,10 +1,13 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import AuthLayout from '../../components/auth-layout';
 import Input from '../../components/ui/input';
 import Button from '../../components/ui/button';
 
 const ResetPass = () => {
+    const [searchParams] = useSearchParams();
+    const token = searchParams.get('token');
+    const navigate = useNavigate();
     const [form, setForm] = useState({
         password: '',
         confirmPassword: '',
@@ -18,9 +21,29 @@ const ResetPass = () => {
         });
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async(e) => {
         e.preventDefault();
-        console.log('Sign Up Data:', form);
+        if (form.password !== form.confirmPassword) {
+            alert('Passwords do not match');
+            return;
+        }
+
+        try {
+            const res = await fetch('http://localhost:8080/api/pass/reset-password', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ password: form.password, token }),
+            });
+
+            const data = await res.json();
+            alert(data.message);
+            if (res.ok) {
+                // Redirect after success
+                navigate('/login');
+            }
+        } catch (err) {
+            alert('Reset failed or token expired');
+        }
     };
 
     return (
