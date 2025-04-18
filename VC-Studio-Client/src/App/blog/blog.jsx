@@ -20,22 +20,22 @@ const BlogPage = ({ isLoggedIn }) => {
     try {
       setLoading(true);
       setError(null);
-  
+
       const searchParams = new URLSearchParams(location.search);
       const searchQuery = searchParams.get("search");
-  
+
       const url = searchQuery
         ? `http://localhost:8080/api/blog/getAllBlogs?search=${encodeURIComponent(
-          searchQuery
-        )}`
+            searchQuery
+          )}`
         : "http://localhost:8080/api/blog/getAllBlogs";
-  
+
       const response = await fetch(url);
       if (!response.ok) {
         throw new Error("Failed to fetch blogs");
       }
       const data = await response.json();
-  
+
       // Fetch average ratings for each blog
       const blogsWithRatings = await Promise.all(
         data.map(async (blog) => {
@@ -63,34 +63,18 @@ const BlogPage = ({ isLoggedIn }) => {
           }
         })
       );
-  
+
       // Sort blogs by AverageRating in descending order
       blogsWithRatings.sort((a, b) => b.AverageRating - a.AverageRating);
-  
+
       setBlogs(blogsWithRatings);
-  
+
       // Initialize accordion states (both accordions closed for each blog)
       const initialAccordionStates = blogsWithRatings.reduce((acc, blog) => {
         acc[blog._id] = { isDescriptionOpen: false, isReviewOpen: false };
         return acc;
       }, {});
       setAccordionStates(initialAccordionStates);
-
-      // Fetch average ratings for each blog
-      const blogsWithRatings = await Promise.all(
-        data.map(async (blog) => {
-          const ratingResponse = await fetch(
-            `http://localhost:8080/api/review/getAverageRating/${blog._id}`
-          );
-          const ratingData = await ratingResponse.json();
-          return {
-            ...blog,
-            AverageRating: ratingData.averageRating || 0,
-          };
-        })
-      );
-
-      setBlogs(blogsWithRatings);
     } catch (error) {
       console.error("Error fetching blogs:", error);
       setError("Failed to load blogs. Please try again later.");
@@ -213,7 +197,7 @@ const BlogPage = ({ isLoggedIn }) => {
         </div>
       )}
       {!loading && blogs.length === 0 && (
-        <div className="footer text-center mt-3" style={{ color: '#9B9C9E' }}>
+        <div className="footer text-center mt-3" style={{ color: "#9B9C9E" }}>
           {location.search
             ? "No blog posts found matching your search criteria."
             : "No blog posts available at the moment."}
@@ -343,13 +327,19 @@ const BlogPage = ({ isLoggedIn }) => {
                             <button
                               className="accordion-button"
                               type="button"
-                              onClick={() => toggleAccordion(blog._id, "isDescriptionOpen")}
-                              aria-expanded={accordionStates[blog._id]?.isDescriptionOpen || false}
+                              onClick={() =>
+                                toggleAccordion(blog._id, "isDescriptionOpen")
+                              }
+                              aria-expanded={
+                                accordionStates[blog._id]?.isDescriptionOpen ||
+                                false
+                              }
                               aria-controls={`collapseDescription-${blog._id}`}
                             >
                               <i
-                                className={`bi bi-chevron-down accordion-icon ${isDescriptionOpen ? "rotate-180" : ""
-                                  }`}
+                                className={`bi bi-chevron-down accordion-icon ${
+                                  isDescriptionOpen ? "rotate-180" : ""
+                                }`}
                               ></i>
                               <span className="ms-2">Description</span>
                             </button>
@@ -359,8 +349,14 @@ const BlogPage = ({ isLoggedIn }) => {
                             className="accordion-collapse"
                             initial={{ height: 0, opacity: 0 }}
                             animate={{
-                              height: accordionStates[blog._id]?.isDescriptionOpen ? "auto" : 0,
-                              opacity: accordionStates[blog._id]?.isDescriptionOpen ? 1 : 0,
+                              height: accordionStates[blog._id]
+                                ?.isDescriptionOpen
+                                ? "auto"
+                                : 0,
+                              opacity: accordionStates[blog._id]
+                                ?.isDescriptionOpen
+                                ? 1
+                                : 0,
                             }}
                             transition={{ duration: 0.3, ease: "easeInOut" }}
                           >
@@ -378,13 +374,18 @@ const BlogPage = ({ isLoggedIn }) => {
                             <button
                               className="accordion-button"
                               type="button"
-                              onClick={() => toggleAccordion(blog._id, "isReviewOpen")}
-                              aria-expanded={accordionStates[blog._id]?.isReviewOpen || false}
+                              onClick={() =>
+                                toggleAccordion(blog._id, "isReviewOpen")
+                              }
+                              aria-expanded={
+                                accordionStates[blog._id]?.isReviewOpen || false
+                              }
                               aria-controls={`collapseReview-${blog._id}`}
                             >
                               <i
-                                className={`bi bi-chevron-down accordion-icon ${isReviewOpen ? "rotate-180" : ""
-                                  }`}
+                                className={`bi bi-chevron-down accordion-icon ${
+                                  isReviewOpen ? "rotate-180" : ""
+                                }`}
                               ></i>
                               <span className="ms-2">Reviews</span>
                             </button>
@@ -394,8 +395,12 @@ const BlogPage = ({ isLoggedIn }) => {
                             className="accordion-collapse"
                             initial={{ height: 0, opacity: 0 }}
                             animate={{
-                              height: accordionStates[blog._id]?.isReviewOpen ? "auto" : 0,
-                              opacity: accordionStates[blog._id]?.isReviewOpen ? 1 : 0,
+                              height: accordionStates[blog._id]?.isReviewOpen
+                                ? "auto"
+                                : 0,
+                              opacity: accordionStates[blog._id]?.isReviewOpen
+                                ? 1
+                                : 0,
                             }}
                             transition={{ duration: 0.3, ease: "easeInOut" }}
                           >
