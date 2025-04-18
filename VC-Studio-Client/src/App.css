@@ -4,6 +4,26 @@
   padding: 0;
   box-sizing: border-box;
 }
+.contact-form {
+  width: 90%;
+  max-width: 600px;
+}
+
+@media (min-width: 768px) {
+  .contact-form {
+    width: 75%;
+  }
+}
+
+@media (min-width: 992px) {
+  .contact-form {
+    width: 50%;
+  }
+}
+.contact-drop{
+  height: 48px;
+}
+
 
 .gradient-text {
   background: linear-gradient(90deg, #4D62E5 0%, #87DDEE 45%, #B6F09C 100%);

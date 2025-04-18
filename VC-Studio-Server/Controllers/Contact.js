@@ -26,7 +26,7 @@ contact.post('/send-email', async (req, res) => {
     // Mail options
     const mailOptions = {
       from: 'lyash031@rku.ac.in', // Sender email address
-      to: 'sdhaduk666@rku.ac.in', // Recipient email address
+      to: 'yashlalani2@gmail.com', // Recipient email address
       subject: `Contact Form - ${subject}`,
       html: `
         <div style="font-family: Arial, sans-serif; padding: 20px; background-color: #f9f9f9; color: #333;">

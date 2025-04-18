@@ -200,7 +200,7 @@
 .dropdown-menu-contact {
   z-index: 1;
   width: 100%;
-  height: 100%;
+  height: 100;
   position: inherit !important;
   animation-duration: 0.2s !important;
   animation-fill-mode: both !important;

@@ -42,12 +42,13 @@ const ContactUs = ({ isLoggedIn }) => {
         <div className="row align-items-top">
           <div className="col-12">
             <div className="card">
-              <div className="card-body text-start d-flex justify-content-center">
-                <form className="p-3 w-50 h-25" onSubmit={handleSubmit}>
+              <div className="card-body d-flex justify-content-center">
+              <form className="p-3 contact-form" onSubmit={handleSubmit}>
+
                   <div className="text-container text-start w-100">
-                    <Title></Title>
+                    <Title />
                     <div className="row">
-                      <div className="col-md-6">
+                      <div className="col-12 col-md-6 mb-3">
                         <Input
                           type="text"
                           name="fullName"
@@ -58,7 +59,7 @@ const ContactUs = ({ isLoggedIn }) => {
                           label="Full Name"
                         />
                       </div>
-                      <div className="col-md-6">
+                      <div className="col-12 col-md-6 mb-3">
                         <Input
                           type="email"
                           name="email"
@@ -71,7 +72,7 @@ const ContactUs = ({ isLoggedIn }) => {
                       </div>
                     </div>
                     <div className="row">
-                      <div className="col-md-6">
+                      <div className="col-12 col-md-6 mb-3">
                         <Input
                           type="text"
                           name="mobileNo"
@@ -82,7 +83,7 @@ const ContactUs = ({ isLoggedIn }) => {
                           label="Mobile No."
                         />
                       </div>
-                      <div className="col-md-6">
+                      <div className="col-12 col-md-6 mb-3">
                         <ContactDropdown
                           label="Subject"
                           options={subjects}
@@ -93,7 +94,7 @@ const ContactUs = ({ isLoggedIn }) => {
                       </div>
                     </div>
                     <div className="row">
-                      <div className="col-md-6">
+                      <div className="col-12 mb-3">
                         <Input
                           type="text"
                           name="message"
@@ -104,11 +105,9 @@ const ContactUs = ({ isLoggedIn }) => {
                           label="Message"
                         />
                       </div>
-                      <div className="col-md-6"></div>
                     </div>
-                    
                     <Button
-                      text="Create free account"
+                      text="Send Message"
                       type="submit"
                       className="btn-create w-100 mt-4"
                     />

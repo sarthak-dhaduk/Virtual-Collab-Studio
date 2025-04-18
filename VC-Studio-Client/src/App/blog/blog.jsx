@@ -6,6 +6,7 @@ import ReviewList from "../../components/ui/ReviewList";
 import AddReview from "../../components/modals/AddReview";
 
 const BlogPage = ({ isLoggedIn }) => {
+  const [accordionStates, setAccordionStates] = useState({});
   const [isDescriptionOpen, setIsDescriptionOpen] = useState(true);
   const [isReviewOpen, setIsReviewOpen] = useState(true);
   const [copyStatuses, setCopyStatuses] = useState({});
@@ -19,21 +20,61 @@ const BlogPage = ({ isLoggedIn }) => {
     try {
       setLoading(true);
       setError(null);
-
+  
       const searchParams = new URLSearchParams(location.search);
       const searchQuery = searchParams.get("search");
-
+  
       const url = searchQuery
         ? `http://localhost:8080/api/blog/getAllBlogs?search=${encodeURIComponent(
           searchQuery
         )}`
         : "http://localhost:8080/api/blog/getAllBlogs";
-
+  
       const response = await fetch(url);
       if (!response.ok) {
         throw new Error("Failed to fetch blogs");
       }
       const data = await response.json();
+  
+      // Fetch average ratings for each blog
+      const blogsWithRatings = await Promise.all(
+        data.map(async (blog) => {
+          try {
+            const ratingResponse = await fetch(
+              `http://localhost:8080/api/review/getAverageRating/${blog._id}`
+            );
+            if (!ratingResponse.ok) {
+              throw new Error("Failed to fetch average rating");
+            }
+            const ratingData = await ratingResponse.json();
+            return {
+              ...blog,
+              AverageRating: ratingData.averageRating || 0,
+            };
+          } catch (error) {
+            console.error(
+              `Error fetching average rating for blog ${blog._id}:`,
+              error
+            );
+            return {
+              ...blog,
+              AverageRating: 0, // Default value if fetching average rating fails
+            };
+          }
+        })
+      );
+  
+      // Sort blogs by AverageRating in descending order
+      blogsWithRatings.sort((a, b) => b.AverageRating - a.AverageRating);
+  
+      setBlogs(blogsWithRatings);
+  
+      // Initialize accordion states (both accordions closed for each blog)
+      const initialAccordionStates = blogsWithRatings.reduce((acc, blog) => {
+        acc[blog._id] = { isDescriptionOpen: false, isReviewOpen: false };
+        return acc;
+      }, {});
+      setAccordionStates(initialAccordionStates);
 
       // Fetch average ratings for each blog
       const blogsWithRatings = await Promise.all(
@@ -61,7 +102,15 @@ const BlogPage = ({ isLoggedIn }) => {
   useEffect(() => {
     fetchData();
   }, [fetchData]);
-
+  const toggleAccordion = (blogId, accordionType) => {
+    setAccordionStates((prevStates) => ({
+      ...prevStates,
+      [blogId]: {
+        ...prevStates[blogId],
+        [accordionType]: !prevStates[blogId][accordionType],
+      },
+    }));
+  };
   const handleSearch = (query) => {
     if (!query.trim()) {
       window.location.href = "/blog";
@@ -259,7 +308,7 @@ const BlogPage = ({ isLoggedIn }) => {
                       </header>
                       <div>
                         <pre>
-                          <code style={{ color: "#686B6E" }}>
+                          <code style={{ color: "#FFFFFF" }}>
                             {blog.CodeSnippet}
                           </code>
                         </pre>
@@ -294,11 +343,9 @@ const BlogPage = ({ isLoggedIn }) => {
                             <button
                               className="accordion-button"
                               type="button"
-                              onClick={() =>
-                                setIsDescriptionOpen(!isDescriptionOpen)
-                              }
-                              aria-expanded={isDescriptionOpen}
-                              aria-controls="collapseDescription"
+                              onClick={() => toggleAccordion(blog._id, "isDescriptionOpen")}
+                              aria-expanded={accordionStates[blog._id]?.isDescriptionOpen || false}
+                              aria-controls={`collapseDescription-${blog._id}`}
                             >
                               <i
                                 className={`bi bi-chevron-down accordion-icon ${isDescriptionOpen ? "rotate-180" : ""
@@ -312,8 +359,8 @@ const BlogPage = ({ isLoggedIn }) => {
                             className="accordion-collapse"
                             initial={{ height: 0, opacity: 0 }}
                             animate={{
-                              height: isDescriptionOpen ? "auto" : 0,
-                              opacity: isDescriptionOpen ? 1 : 0,
+                              height: accordionStates[blog._id]?.isDescriptionOpen ? "auto" : 0,
+                              opacity: accordionStates[blog._id]?.isDescriptionOpen ? 1 : 0,
                             }}
                             transition={{ duration: 0.3, ease: "easeInOut" }}
                           >
@@ -331,9 +378,9 @@ const BlogPage = ({ isLoggedIn }) => {
                             <button
                               className="accordion-button"
                               type="button"
-                              onClick={() => setIsReviewOpen(!isReviewOpen)}
-                              aria-expanded={isReviewOpen}
-                              aria-controls="collapseReview"
+                              onClick={() => toggleAccordion(blog._id, "isReviewOpen")}
+                              aria-expanded={accordionStates[blog._id]?.isReviewOpen || false}
+                              aria-controls={`collapseReview-${blog._id}`}
                             >
                               <i
                                 className={`bi bi-chevron-down accordion-icon ${isReviewOpen ? "rotate-180" : ""
@@ -347,8 +394,8 @@ const BlogPage = ({ isLoggedIn }) => {
                             className="accordion-collapse"
                             initial={{ height: 0, opacity: 0 }}
                             animate={{
-                              height: isReviewOpen ? "auto" : 0,
-                              opacity: isReviewOpen ? 1 : 0,
+                              height: accordionStates[blog._id]?.isReviewOpen ? "auto" : 0,
+                              opacity: accordionStates[blog._id]?.isReviewOpen ? 1 : 0,
                             }}
                             transition={{ duration: 0.3, ease: "easeInOut" }}
                           >
