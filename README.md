@@ -18,7 +18,7 @@
   <p align="center">
     An innovative collaborative coding platform for seamless teamwork and code sharing.
     <br />
-    <a href="https://github.com/sarthak-dhaduk/Virtual-Collab-Studio"><strong>Explore the docs »</strong></a>
+    <a href="https://drive.google.com/drive/folders/1cqoBab_AcARSIb3mg26sVDFIBNyMDx17?usp=sharing"><strong>Explore the docs »</strong></a>
     <br />
     <br />
     <a href="https://github.com/sarthak-dhaduk/Virtual-Collab-Studio/archive/refs/heads/main.zip">Download ZIP</a>
