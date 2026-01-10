@@ -7,8 +7,8 @@ import AddReview from "../../components/modals/AddReview";
 
 const BlogPage = ({ isLoggedIn }) => {
   const [accordionStates, setAccordionStates] = useState({});
-  const [isDescriptionOpen, setIsDescriptionOpen] = useState(true);
-  const [isReviewOpen, setIsReviewOpen] = useState(true);
+  const [isDescriptionOpen] = useState(true);
+  const [isReviewOpen] = useState(true);
   const [copyStatuses, setCopyStatuses] = useState({});
   const [blogs, setBlogs] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -75,6 +75,8 @@ const BlogPage = ({ isLoggedIn }) => {
         return acc;
       }, {});
       setAccordionStates(initialAccordionStates);
+
+      setBlogs(blogsWithRatings);
     } catch (error) {
       console.error("Error fetching blogs:", error);
       setError("Failed to load blogs. Please try again later.");
